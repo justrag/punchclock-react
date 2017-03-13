@@ -1,3 +1,8 @@
-    Meteor.setInterval(function() {
-      Dispatch('CLOCK_TICK');
-    }, 1000);
+import { createReducer } from 'redux-act';
+import { logOut } from '../actions/';
+
+const reducer = createReducer({
+  [logOut]: () => false,
+}, true);
+
+export default reducer;
