@@ -1,8 +1,7 @@
-import { createAction } from 'redux-act';
+import { createAction } from "redux-act";
 
-export const logOut = createAction("LOG_OUT");
-/*
-    Meteor.setInterval(function() {
-      Dispatch('CLOCK_TICK');
-    }, 1000);
-*/
+export const logOut = createAction("LOGOUT");
+export const timeSelectChange = createAction(
+  "TIMESELECT",
+  (period,direction) => ({ period, direction })
+);

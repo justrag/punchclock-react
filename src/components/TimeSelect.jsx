@@ -1,53 +1,50 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { HOURS, MINUTES, PLUS, MINUS} from '../constants/';
+import { timeSelectChange as timeSelectChangeAction } from '../actions/';
 
 const TimeSelect = ({
-  TIMESELECT_CHANGED,
-  Timeselect.limits.hours.first,
-  Timeselect.limits.hours.last,
-  Timeselect.limits.minutes.first,
-  Timeselect.limits.minutes.last,
-  Timeselect.parts.hours,
-  Timeselect.parts.minutes,
-  Timeselect.prev.hours,
-  Timeselect.next.hours,
-  Timeselect.prev.minutes,
-  Timeselect.next.minutes,
+  parts,
+  limits,
+  next,
+  prev,
+  timeSelectChange,
 }) => (
-<div class="horizontal picker pickertime">
-<div class="pickercolumn pickercolumnhours">
-  <a dispatch="TIMESELECT_CHANGED"
-  data-date-field="hours"
-  data-direction="minus"
-  disabled={{Timeselect.limits.hours.first}}
-  class="pickerbutton pickerbuttonup">
-  {{Timeselect.prev.hours}}
+<div className="horizontal picker pickertime">
+<div className="pickercolumn pickercolumnhours">
+  <a onClick={() => timeSelectChange(HOURS,MINUS)}
+  disabled={limits.hours.first}
+  className="pickerbutton pickerbuttonup">
+  {prev.hours}
   </a>
-<div class="pickercard">{{Timeselect.parts.hours}}:</div>
-  <a dispatch="TIMESELECT_CHANGED"
-  data-date-field="hours"
-  data-direction="plus"
-  disabled={{Timeselect.limits.hours.last}}
-  class="pickerbutton pickerbuttondown">
-  {{Timeselect.next.hours}}
+<div className="pickercard">{parts.hours}:</div>
+  <a onClick={() => timeSelectChange(HOURS,PLUS)}
+  disabled={limits.hours.last}
+  className="pickerbutton pickerbuttondown">
+  {next.hours}
   </a>
 </div>
-<div class="pickercolumn pickercolumnminutes">
-  <a dispatch="TIMESELECT_CHANGED"
-  data-date-field="minutes" 
-  data-direction="minus" 
-  disabled={{Timeselect.limits.minutes.first}}  
-  class="pickerbutton pickerbuttonup">
-  {{Timeselect.prev.minutes}}
+<div className="pickercolumn pickercolumnminutes">
+  <a onClick={() => timeSelectChange(MINUTES,MINUS)}
+  disabled={limits.minutes.first}  
+  className="pickerbutton pickerbuttonup">
+  {prev.minutes}
   </a>
-<div class="pickercard">{{Timeselect.parts.minutes}}</div>
-  <a dispatch="TIMESELECT_CHANGED"
-   data-date-field="minutes" 
-   data-direction="plus" 
-   disabled={{Timeselect.limits.minutes.last}} 
-   class="pickerbutton pickerbuttondown">
-   {{Timeselect.next.minutes}}
+<div className="pickercard">{parts.minutes}</div>
+  <a onClick={() => timeSelectChange(MINUTES,PLUS)}
+   disabled={limits.minutes.last} 
+   className="pickerbutton pickerbuttondown">
+   {next.minutes}
    </a>
 </div>
 </div>
 );
-export default TimeSelect;
+const mapStateToProps = state => ({
+  parts: state.timeselect.parts,
+  limits: state.timeselect.limits,
+  next: state.timeselect.next,
+  prev: state.timeselect.prev,
+});
+export default connect(mapStateToProps, {
+  timeSelectChange: timeSelectChangeAction,
+})(TimeSelect);

@@ -8,12 +8,12 @@ import TimeSelect from './TimeSelect';
 
 
 const Clock = () => (<div>
-<div class="horizontal">
+<div className="horizontal">
 <div></div>
 <DateSelect />
 <ResetSelect />
 </div>
-<div class="horizontal">
+<div className="horizontal">
 <EnterTime />
 <ShiftLength />
 <ExitTime />

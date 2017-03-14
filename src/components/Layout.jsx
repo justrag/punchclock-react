@@ -1,14 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
 import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
-/*
 import Clock from "./Clock";
-import Stats from "./Stats";
-*/
+/* import Stats from "./Stats"; */
 import Settings from "./Settings";
 import { logOut as logOutAction } from "../actions/";
 
-const Clock = () => (<div>Clock</div>);
 const Stats = () => (<div>Stats</div>);
 
 const Layout = ({logOut, userNotLoggedIn, userShortName}) => (

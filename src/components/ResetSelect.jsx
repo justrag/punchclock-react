@@ -1,10 +1,18 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { timeSelectReset as timeSelectResetAction} from '../actions/';
 
 const ResetSelect = ({
-  TIMESELECT_RESET,
-  Timeselect.notselected,
-  Clockface.display,
+  timeSelectReset,
+  notSelected,
+  clockFaceDisplay,
 }) => (
-<a dispatch="TIMESELECT_RESET" class="button" disabled={{Timeselect.notselected}}><i class="fa fa-refresh"></i><br />{{Clockface.display}}</a>
+<a onClick={timeSelectReset} className="button" disabled={notSelected}>
+<i className="fa fa-refresh"></i><br />{clockFaceDisplay}
+</a>
 );
-export default ResetSelect;
+const mapStateToProps = state => ({
+  notSelected: state.timeselect.notSelected,
+  clockFaceDisplay: state.clockface.display, 
+});
+export default connect(mapStateToProps, {timeSelectReset: () => timeSelectResetAction()})(ResetSelect);

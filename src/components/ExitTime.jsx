@@ -1,29 +1,47 @@
-import React from 'react';
+import React from "react";
+import { connect } from "react-redux";
+import {
+  exitChange as exitChangeAction,
+  exit as exitAction
+} from "../actions/";
 
-const ExitTime = ({
-	Day.exit,
-	Day.exit.time,
-	EXITED_CHANGE,
-	EXITED,
-	Timeselect.timeString,
-	Day.notYetEntered,
-}) => (
-	<div class="vertical">
-	<p>
-	Wyjście:
-	{{#if Day.exit}}
-	<span>{{Day.exit.time}}</span>
-	{{else}}
-	<span>&nbsp;&nbsp;:&nbsp;&nbsp;</span>
-	{{/if}}
+const ExitTime = (
+  {
+    exited,
+    exitTime,
+    timeString,
+    notYetEntered,
+    exitChange,
+    exit
+  }
+) => (
+  <div className="vertical">
+    <p>
+      Wyjście:
+      {exited
+        ? <span>{exitTime}</span>
+        : <span>&nbsp;&nbsp;:&nbsp;&nbsp;</span>}
     </p>
-	{{#if Day.exit}}
-	<a dispatch='EXITED_CHANGE' class="button"><i class="fa fa-lg fa-pencil"></i><br />Jednak wyszedłem o:<br />{{Timeselect.timeString}}</a>
-	{{else}}
-	<a dispatch='EXITED' class="button" disabled={{Day.notYetEntered}}>
-	<i class="fa fa-lg fa-sign-out"></i><br />Wychodzę o:<br />{{Timeselect.timeString}}
-	</a>
-	{{/if}}
-	</div>
+    {exited
+      ? <a onClick={exitChange} className="button">
+          <i className="fa fa-lg fa-pencil" />
+          <br />
+          Jednak wyszedłem o:
+          <br />
+          {timeString}
+        </a>
+      : <a onClick={exit} className="button" disabled={notYetEntered}>
+          <i className="fa fa-lg fa-sign-out" /><br />Wychodzę o:<br />{timeString}
+        </a>}
+  </div>
 );
-export default ExitTime;
+const mapStateToProps = state => ({
+  exited: state.day.exit, // bool if it exists
+  exitTime: state.day.exit.time,
+  timeString: state.timeselect.timeString,
+  notYetEntered: state.day.notYetEntered
+});
+export default connect(mapStateToProps, {
+  exitChange: () => exitChangeAction(),
+  exit: () => exitAction()
+})(ExitTime);
