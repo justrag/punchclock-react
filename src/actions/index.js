@@ -5,3 +5,4 @@ export const timeSelectChange = createAction(
   "TIMESELECT",
   (period,direction) => ({ period, direction })
 );
+export const clockTick = createAction("CLOCK_TICK");

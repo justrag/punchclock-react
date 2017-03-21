@@ -1,11 +1,11 @@
-    State.modify('Clockface', (state = false) => {
-      if (Action.is("CLOCK_TICK")) {
-        let m = moment();
-        let timestamp = m.valueOf();
-        let utcOffset = m.utcOffset();
-        let display = m.format("ddd, D MMM YYYY, HH:mm:ss");
-        return {
-          timestamp, display
-        };
-      } else return state;
-    });
+import { createReducer } from "redux-act";
+import { displayNow } from "../libs/timeFunctions";
+import { clockTick } from "../actions/";
+
+const clockface = createReducer(
+  {
+    [clockTick]: () => displayNow()
+  },
+  displayNow()
+);
+export default clockface;

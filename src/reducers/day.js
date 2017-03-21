@@ -1,3 +1,18 @@
+import { createReducer } from "redux-act";
+
+// PROBABLY an async action
+// following the change of timeselect.numericalDate
+
+
+const day = createReducer(
+  {
+//    [someAction]: (state, payload) => newvalue(state, payload)
+  },
+//  initVal
+);
+export default day;
+
+
     State.modify('Day', (state = false) => {
       let numericalDate = State.get('Timeselect.numericalDate');
       let i = Incidents.findOne({

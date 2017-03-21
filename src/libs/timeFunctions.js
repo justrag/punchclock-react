@@ -1,44 +1,41 @@
 import R from "ramda";
-import format from "date-fans/format";
-import getMonth from "date-fns/get_month";
-import getYear from "date-fns/get_year";
+import format from "date-fns/format";
 import startOfWeek from "date-fns/start_of_week";
+import getYear from "date-fns/get_year";
+import getMonth from "date-fns/get_month";
+import getDate from "date-fns/get_date";
+import getHours from "date-fns/get_hours";
+import getMinutes from "date-fns/get_minutes";
+import getSeconds from "date-fns/get_seconds";
+import getMilliseconds from "date-fns/get_milliseconds";
+import addDays from "date-fns/add_days";
+import addMonths from "date-fns/add_months";
+import addYears from "date-fns/add_years";
+import addHours from "date-fns/add_hours";
+import addMinutes from "date-fns/add_minutes";
+import { DATE, DAYS, MONTHS, YEARS, HOURS, MINUTES, PLUS, MINUS, dateFormats } from '../constants/';
 
-/// FIXME: WHAT ABOUT UTC OFFSET???
-///check every function that takes utcOffset as param
+export const formatDate = timestamp => format(timestamp, "YYYYMMDD");
+export const formatTime = timestamp => format(timestamp, "HH:mm");
 
-//export const formatDate = (timestamp, utcOffset=0) => moment(timestamp).utcOffset(utcOffset).format("YYYYMMDD");
-export const formatDate = (timestamp, utcOffset = 0) =>
-  format(new Date(timestamp), "YYYYMMDD");
-//  const formatTime = (timestamp, utcOffset=0) => moment(timestamp).utcOffset(utcOffset).format("HH:mm:ss");
-export const formatTime = (timestamp, utcOffset = 0) =>
-  format(new Date(timestamp), "HH:mm");
+export const splitTime = timestamp =>
+  R.map(spec => format(timestamp, spec), dateFormats);
 
-export const splitTime = (timestamp, utcOffset = 0) => {
-  let date = Date(timestamp);
-  let formats = {
-    day: "D",
-    month: "MMM",
-    year: "YYYY",
-    hour: "HH",
-    minute: "mm",
-    second: "ss"
-  };
-  return R.map(val => format(date, val), formats);
-};
-
-export const todaysDate = () => format(new Date(), "YYYYMMDD");
+export const todaysDate = () => formatDate(new Date());
 export const hoursToMilliseconds = ms => ms * 3600000;
 
-export const dateTimeStamp = (timestamp = Date.now(), utcOffset = 0) => {
-  //let timestamp = Date.now();
-  let date = formatDate(timestamp, utcOffset);
-  let time = formatTime(timestamp, utcOffset);
-  return {
-    timestamp,
-    date,
-    time
-  };
+export const dateTimeStamp = (timestamp = Date.now()) => ({
+  timestamp,
+  date: formatDate(timestamp, utcOffset),
+  time: formatTime(timestamp, utcOffset)
+});
+
+export const displayNow = () => {
+  const now = new Date();
+  return ({
+    timestamp: now.valueOf(),
+    display: format(now, "ddd, D MMM YYYY, HH:mm:ss"),
+  });
 };
 
 export const fromMsToHrsMinsSecs = duration => format(duration, "HH:mm:ss");
@@ -52,15 +49,31 @@ export const formatDiffTimestamp = timestamp => {
   return prefix + fromMsToHrsMins(Math.abs(timestamp));
 };
 
-//export const firstDayOfTheWeek = (timestamp) => moment(timestamp).startOf('week').format("YYYYMMDD");
 export const firstDayOfTheWeek = timestamp =>
-  format(startOfWeek(new Date(timestamp)), "YYYYMMDD");
-//export const firstDayOfTheMonth = (timestamp) => moment(timestamp).startOf('month').format("YYYYMMDD");
+  formatDate(startOfWeek(timestamp));
 export const firstDayOfTheMonth = timestamp =>
-  format(
-    new Date(getYear(new Date(timestamp)), getMonth(new Date(timestamp)), 1),
-    "YYYYMMDD"
-  );
-//export const firstDayOfTheYear = (timestamp) => moment(timestamp).startOf('year').format("YYYYMMDD");
+  formatDate(new Date(getYear(timestamp), getMonth(timestamp), 1));
 export const firstDayOfTheYear = timestamp =>
-  format(new Date(getYear(new Date(timestamp)), 0, 1), "YYYYMMDD");
+  formatDate(new Date(getYear(timestamp), 0, 1));
+
+export const toObject = timestamp => ({
+  [YEARS]: getYear(timestamp),
+  [MONTHS]: getMonth(timestamp),
+  [DATE]: getDate(timestamp),
+  [HOURS]: getHours(timestamp),
+  [MINUTES]: getMinutes(timestamp),
+  [SECONDS]: getSeconds(timestamp),
+  [MILLISECONDS]: getMilliseconds(timestamp),
+});
+
+export const addTime = (timestamp, delta, unit) => {
+  switch(unit) {
+    DATE:
+    DAYS: return addDays(timestamp, delta);
+    MONTHS: return addMonths(timestamp, delta);
+    YEARS: return addYears(timestamp, delta);
+    HOURS: return addHours(timestamp, delta);
+    MINUTES: return addMinutes(timestamp, delta);
+    default: return new Date(timestamp);
+  };
+};

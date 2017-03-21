@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { timeSelectReset as timeSelectResetAction} from '../actions/';
+import { timeSelectReset as timeSelectResetAction } from '../actions/';
 
 const ResetSelect = ({
   timeSelectReset,
