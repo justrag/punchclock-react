@@ -4,6 +4,7 @@ import {
   shiftlengthIncrease as shiftlengthIncreaseAction,
   shiftlengthDecrease as shiftlengthDecreaseAction
 } from '../actions/';
+import { getShiftLength, isTimeselectToday } from '../reducers/';
 
 const ShiftLength = ({
   shiftlengthIncrease,
@@ -32,11 +33,11 @@ const ShiftLength = ({
 </div>
 );
 const mapStateToProps = state => ({
-  shiftLength: state.shift.length,
+  shiftLength: getShiftlength(state),
+  isItToday: isTimeselectToday(state),
   exited: state.day.exit, // bool if it exists
   workTime: state.day.work.time,
   entered: state.day.enter, // bool if it exists
-  isItToday: state.timeselect.isItToday,
   gone: state.timeleft.gone,
   absText: state.timeleft.absText,
 });

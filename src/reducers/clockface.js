@@ -9,3 +9,5 @@ const clockface = createReducer(
   displayNow()
 );
 export default clockface;
+
+export const getDisplay = state => state.display;

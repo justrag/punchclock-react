@@ -1,13 +1,17 @@
 import React from "react";
 import { connect } from "react-redux";
-import { timeSelectChange as timeSelectChangeAction } from "../actions/";
+import { timeselectChange as timeselectChangeAction } from "../actions/";
 import { DATE, DAYS, MONTHS, YEARS, PLUS, MINUS } from '../constants/';
+import { getTimeselectDate, getTimeselectMonths, getTimeselectYears,
+  getTimeselectLimits, getTimeselectPrev, getTimeselectNext } from '../reducers/';
 
 const DateSelect = (
   {
-    timeSelectChange,
+  timeselectDate,
+  timeselectMonths,
+  timeselectYears,
+    timeselectChange,
     limits,
-    parts,
     next,
     prev
   }
@@ -15,8 +19,8 @@ const DateSelect = (
   <div className="horizontal picker pickerdate">
     <div className="pickercolumn pickercolumnday">
       <a
-        onClick={() => timeSelectChange(DAYS,MINUS)}
-        disabled={limits.day.first}
+        onClick={() => timeselectChange(DAYS,MINUS)}
+        disabled={limits[DAYS].first}
         className="pickerbutton pickerbuttonleft"
       >
         <i className="fa fa-lg fa-chevron-left" />
@@ -24,59 +28,59 @@ const DateSelect = (
     </div>
     <div className="pickercolumn pickercolumndate">
       <a
-        onClick={() => timeSelectChange(DATE,MINUS)}
-        disabled={limits.date.first}
+        onClick={() => timeselectChange(DATE,MINUS)}
+        disabled={limits[DATE].first}
         className="pickerbutton pickerbuttonup"
       >
-        {prev.date}
+        {prev[DATE]}
       </a>
-      <div className="pickercard">{parts.date}</div>
+      <div className="pickercard">{timeselectDate}</div>
       <a
-        onClick={() => timeSelectChange(DATE,PLUS)}
-        disabled={limits.date.last}
+        onClick={() => timeselectChange(DATE,PLUS)}
+        disabled={limits[DATE].last}
         className="pickerbutton pickerbuttondown"
       >
-        {next.date}
+        {next[DATE]}
       </a>
     </div>
     <div className="pickercolumn pickercolumnmonths">
       <a
-        onClick={() => timeSelectChange(MONTHS,MINUS)}
-        disabled={limits.months.first}
+        onClick={() => timeselectChange(MONTHS,MINUS)}
+        disabled={limits[MONTHS].first}
         className="pickerbutton pickerbuttonup"
       >
-        {prev.months}
+        {prev[MONTHS]}
       </a>
-      <div className="pickercard">{parts.months}</div>
+      <div className="pickercard">{timeselectMonths}</div>
       <a
-        onClick={() => timeSelectChange(MONTHS,PLUS)}
-        disabled={limits.months.last}
+        onClick={() => timeselectChange(MONTHS,PLUS)}
+        disabled={limits[MONTHS].last}
         className="pickerbutton pickerbuttondown"
       >
-        {next.months}
+        {next[MONTHS]}
       </a>
     </div>
     <div className="pickercolumn pickercolumnyears">
       <a
-        onClick={() => timeSelectChange(YEARS,MINUS)}
-        disabled={limits.years.first}
+        onClick={() => timeselectChange(YEARS,MINUS)}
+        disabled={limits[YEARS].first}
         className="pickerbutton pickerbuttonup"
       >
-        {prev.years}
+        {prev[YEARS]}
       </a>
-      <div className="pickercard">{parts.years}</div>
+      <div className="pickercard">{timeselectYears}</div>
       <a
-        onClick={() => timeSelectChange(YEARS,PLUS)}
-        disabled={limits.years.last}
+        onClick={() => timeselectChange(YEARS,PLUS)}
+        disabled={limits[YEARS].last}
         className="pickerbutton pickerbuttondown"
       >
-        {next.years}
+        {next[YEARS]}
       </a>
     </div>
     <div className="pickercolumn pickercolumnday">
       <a
-        onClick={() => timeSelectChange(DAYS,PLUS)}
-        disabled={limits.day.last}
+        onClick={() => timeselectChange(DAYS,PLUS)}
+        disabled={limits[DAYS].last}
         className="pickerbutton pickerbuttonright"
       >
         <i className="fa fa-lg fa-chevron-right" />
@@ -85,11 +89,13 @@ const DateSelect = (
   </div>
 );
 const mapStateToProps = state => ({
-  limits: state.timeselect.limits,
-  parts: state.timeselect.parts,
-  prev: state.timeselect.prev,
-  next: state.timeselect.next,
+  timeselectDate: getTimeselectDate(state),
+  timeselectMonths: getTimeselectMonths(state),
+  timeselectYears: getTimeselectYears(state),
+  limits: getTimeselectLimits(state),
+  prev: getTimeselectPrev(state),
+  next: getTimeselectNext(state),
 });
 export default connect(mapStateToProps, {
-  timeSelectChange: timeSelectChangeAction
+  timeselectChange: timeselectChangeAction
 })(DateSelect);

@@ -1,18 +1,14 @@
-    State.modify('User', (state = false) => {
-      let u = Meteor.user();
-      if (u) {
-        return {
-          loggedIn: true,
-          notLoggedIn: false,
-          email: u.emails[0].address,
-          shortname: u.emails[0].address.split('@')[0],
-        };
-      } else {
-        return {
-          loggedIn: false,
-          notLoggedIn: true,
-          email: undefined,
-          shortname: undefined
-        };
-      }
-    });
+import { createReducer } from "redux-act";
+import { logIn, logOut } from "../actions/";
+
+const user = createReducer(
+  {
+    [logIn]: () => ({ login: "johnny", token: "SOMETOKEN" }),
+    [logOut]: () => ({ login: false, token: false })
+  },
+  { login: false, token: false }
+);
+export default user;
+
+export const getUserLogin = state => state.login;
+export const getUserToken = state => state.token;

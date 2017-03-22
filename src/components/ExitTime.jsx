@@ -4,6 +4,7 @@ import {
   exitChange as exitChangeAction,
   exit as exitAction
 } from "../actions/";
+import { getTimeselectString } from '../reducers/';
 
 const ExitTime = (
   {
@@ -36,9 +37,9 @@ const ExitTime = (
   </div>
 );
 const mapStateToProps = state => ({
+  timeString: getTimeselectString(state),
   exited: state.day.exit, // bool if it exists
   exitTime: state.day.exit.time,
-  timeString: state.timeselect.timeString,
   notYetEntered: state.day.notYetEntered
 });
 export default connect(mapStateToProps, {

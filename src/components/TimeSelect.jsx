@@ -1,50 +1,53 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { HOURS, MINUTES, PLUS, MINUS} from '../constants/';
-import { timeSelectChange as timeSelectChangeAction } from '../actions/';
+import { timeselectChange as timeselectChangeAction } from '../actions/';
+import { getTimeselectHours, getTimeselectMinutes, getTimeselectLimits, getTimeselectPrev, getTimeselectNext } from '../reducers/';
 
 const TimeSelect = ({
-  parts,
+  timeselectHours,
+  timeselectMinutes,
   limits,
   next,
   prev,
-  timeSelectChange,
+  timeselectChange,
 }) => (
 <div className="horizontal picker pickertime">
 <div className="pickercolumn pickercolumnhours">
-  <a onClick={() => timeSelectChange(HOURS,MINUS)}
-  disabled={limits.hours.first}
+  <a onClick={() => timeselectChange(HOURS,MINUS)}
+  disabled={limits[HOURS].first}
   className="pickerbutton pickerbuttonup">
-  {prev.hours}
+  {prev[HOURS]}
   </a>
-<div className="pickercard">{parts.hours}:</div>
-  <a onClick={() => timeSelectChange(HOURS,PLUS)}
-  disabled={limits.hours.last}
+<div className="pickercard">{timeselectHours}:</div>
+  <a onClick={() => timeselectChange(HOURS,PLUS)}
+  disabled={limits[HOURS].last}
   className="pickerbutton pickerbuttondown">
-  {next.hours}
+  {next[HOURS]}
   </a>
 </div>
 <div className="pickercolumn pickercolumnminutes">
-  <a onClick={() => timeSelectChange(MINUTES,MINUS)}
-  disabled={limits.minutes.first}  
+  <a onClick={() => timeselectChange(MINUTES,MINUS)}
+  disabled={limits[MINUTES].first}  
   className="pickerbutton pickerbuttonup">
-  {prev.minutes}
+  {prev[MINUTES]}
   </a>
-<div className="pickercard">{parts.minutes}</div>
-  <a onClick={() => timeSelectChange(MINUTES,PLUS)}
-   disabled={limits.minutes.last} 
+<div className="pickercard">{timeselectMinutes}</div>
+  <a onClick={() => timeselectChange(MINUTES,PLUS)}
+   disabled={limits[MINUTES].last} 
    className="pickerbutton pickerbuttondown">
-   {next.minutes}
+   {next[MINUTES]}
    </a>
 </div>
 </div>
 );
 const mapStateToProps = state => ({
-  parts: state.timeselect.parts,
-  limits: state.timeselect.limits,
-  next: state.timeselect.next,
-  prev: state.timeselect.prev,
+  timeselectHours: getTimeselectHours(state),
+  timeselectMinutes: getTimeselectMinutes(state),
+  limits: getTimeselectLimits(state),
+  prev: getTimeselectPrev(state),
+  next: getTimeselectNext(state),
 });
 export default connect(mapStateToProps, {
-  timeSelectChange: timeSelectChangeAction,
+  timeselectChange: timeselectChangeAction,
 })(TimeSelect);
