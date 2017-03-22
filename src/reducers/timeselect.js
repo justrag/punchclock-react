@@ -1,107 +1,98 @@
+import { combineReducers } from "redux";
 import { createReducer } from "redux-act";
-import R from "ramda";
 import isToday from 'date-fns/is_today';
-import endOfDay from 'date-fns/end_of_day';
 import getYearsFns from "date-fns/get_year";
 import getMonthsFns from "date-fns/get_month";
 import getDateFns from "date-fns/get_date";
 import getHoursFns from "date-fns/get_hours";
 import getMinutesFns from "date-fns/get_minutes";
 import endOfMonth from "date-fns/end_of_month";
-import min from 'date-fns/min';
-import isAfter from 'date-fns/is_after';
 import endOfYesterday from 'date-fns/end_of_yesterday'
-import { splitTime, addTime, formatTime } from "../libs/timeFunctions";
-import { timeselectReset, timeselectChange, clockTick } from "../actions/";
-import { DATE, DAYS, MONTHS, YEARS, HOURS, MINUTES, PLUS, MINUS } from '../constants/';
+import addDays from "date-fns/add_days";
+import addMonths from "date-fns/add_months";
+import addYears from "date-fns/add_years";
+import addHours from "date-fns/add_hours";
+import addMinutes from "date-fns/add_minutes";
+import isAfter from 'date-fns/is_after';
+import { formatTime } from "../libs/timeFunctions";
+import {
+//  clockTick,
+  timeselectReset,
+  timeselectChangeDay,
+  timeselectChangeDate,
+  timeselectChangeMonth,
+  timeselectChangeYear,
+  timeselectChangeMinute,
+  timeselectChangeHour,  
+ } from "../actions/";
 
-function zeroPad(val) {return (val<10)?("0"+val):(val);}
-
-const datefields = [DATE, DAYS, MONTHS, YEARS, HOURS, MINUTES];
-const directions = [PLUS, MINUS];
+const zeroPad = val => ( (val<10) ? `0${val}` : `${val}` );
 const monthsList=['sty','lut','mar','kwi','maj','cze','lip','sie','wrz','paź','lis','gru'];
 
-const generateTimeselect = (selected, date) => {
-      const now=new Date();
-      const timestamp = date.valueOf();
-      const limits = {
-        [DAYS]: {
-          first: (getDateFns(date) === 1 && getMonthsFns(date) === 0 && getYearsFns(date) === 2000),
-          last: isAfter(date, endOfYesterday())
-        },
-        [DATE]: {
-          first: (getDateFns(date) === 1),
-          last: (getDateFns(endOfMonth(now)) === getDateFns(date))
-        },
-        [MONTHS]: {
-          first: (getDateFns(date) === 0),
-          last: (getDateFns(date) === 11)
-        },
-        [YEARS]: {
-          first: (getYearsFns(date) === 2000),
-          last: (getYearsFns(date) === getYearsFns(now))
-        },
-        [HOURS]: {
-          first: (getHoursFns(date) === 0),
-          last: (getHoursFns(date) === 23)
-        },
-        [MINUTES]: {
-          first: (getMinutesFns(date) === 0),
-          last: (getMinutesFns(date) === 59)
-        }
-      };
-      let prev={};
-      let next={};
-        if (limits[DATE].first) {prev[DATE]="";} else {prev[DATE]=getDateFns(date)-1;};
-        if (limits[DATE].last) {next[DATE]="";} else {next[DATE]=getDateFns(date)+1;};
-        if (limits[YEARS].first) {prev[YEARS]="";} else {prev[YEARS]=getYearsFns(date)-1;};
-        if (limits[YEARS].last) {next[YEARS]="";} else {next[YEARS]=getYearsFns(date)+1;};
-
-        if (limits[MONTHS].first) {prev[MONTHS]="";} else {prev[MONTHS]=monthsList[getDateFns(date)-1];};
-        if (limits[MONTHS].last) {next[MONTHS]="";} else {next[MONTHS]=monthsList[getMonthsFns(date)+1];};
-        if (limits[HOURS].first) {prev[HOURS]="";} else {prev[HOURS]=zeroPad(getHoursFns(date)-1);};
-        if (limits[HOURS].last) {next[HOURS]="";} else {next[HOURS]=zeroPad(getHoursFns(date)+1);};
-        if (limits[MINUTES].first) {prev[MINUTES]="";} else {prev[MINUTES]=zeroPad(getMinutesFns(date)-1);};
-        if (limits[MINUTES].last) {next[MINUTES]="";} else {next[MINUTES]=zeroPad(getMinutesFns(date)+1);};
-
-      return {
-        selected, timestamp, limits, prev, next
-      };
-
-    };
-
-const changedTimeselect = (state, {period = DATE, direction = MINUS }) => {
-  if (!R.contains(period, datefields)) {period = DATE;}
-  if (!R.contains(direction, directions)) {direction = PLUS;}
-  let oldm = new Date(state.timestamp);
-  const delta = (direction === PLUS) ? 1 : -1;
-  const limit = state.limits[period];
-  const isAgainstLimits = (direction === PLUS) ? limit.last : limit.first;
-  if (!isAgainstLimits) oldm=addTime(oldm, delta, period);
-  const m = min(endOfDay(new Date()), oldm);
-  return generateTimeselect(true, m);
-};
-
-const timeselect = createReducer(
+const selected = createReducer(
   {
-    [timeselectReset]: () => generateTimeselect(false, new Date()),
-    [clockTick]: state => generateTimeselect(state.selected, (state.selected ? new Date(state.timestamp): new Date())),
-    [timeselectChange]: (state, payload) => changedTimeselect(state, payload),
+    [timeselectReset]: () => false,
+    [timeselectChangeDay]: () => true,
+    [timeselectChangeDate]: () => true,
+    [timeselectChangeMonth]: () => true,
+    [timeselectChangeYear]: () => true,
+    [timeselectChangeHour]: () => true,
+    [timeselectChangeMinute]: () => true,
+  }, false);
+
+const timestamp = createReducer(
+  {
+    // Need to put this in middleware
+    //[clockTick]: state => (state.selected ? state.timestamp : Date.now()),
+    [timeselectReset]: () => Date.now(),
+    [timeselectChangeDay]: (state, delta) => addDays(state, delta).valueOf(),
+    [timeselectChangeDate]: (state, delta) => addDays(state, delta).valueOf(),
+    [timeselectChangeMonth]: (state, delta) => addMonths(state, delta).valueOf(),
+    [timeselectChangeYear]: (state, delta) => addYears(state, delta).valueOf(),
+    [timeselectChangeHour]: (state, delta) => addHours(state, delta).valueOf(),
+    [timeselectChangeMinute]: (state, delta) => addMinutes(state, delta).valueOf(),
   },
-  generateTimeselect(false, new Date())
-  );
+  Date.now());
+//  if (!isAgainstLimits) oldm=addTime(oldm, delta, period);
+//  const m = min(endOfDay(new Date()), oldm);
+//  return m.valueOf();
+
+const timeselect = combineReducers({
+  selected,
+  timestamp,
+});
 export default timeselect;
 
-export const getLimits = state => state.limits;
-export const getPrev = state => state.prev;
-export const getNext = state => state.next;
 export const getSelected = state => state.selected;
-export const getParts = state => splitTime(state.timestamp);
 export const isItToday = state => isToday(state.timestamp);
 export const getString = state => formatTime(state.timestamp);
 
 export const getDate = state => getDateFns(state.timestamp);
-export const getMonths = state => getMonthsFns(state.timestamp);
+export const getMonths = state => monthsList[getMonthsFns(state.timestamp)];
 export const getYears = state => getYearsFns(state.timestamp);
-export const getMinutes = state => getMinutesFns(state.timestamp);
-export const getHours = state => getHoursFns(state.timestamp);
+export const getMinutes = state => zeroPad(getMinutesFns(state.timestamp));
+export const getHours = state => zeroPad(getHoursFns(state.timestamp));
+
+export const isFirstDay = ({timestamp}) => 
+ (getDateFns(timestamp) === 1 && getMonthsFns(timestamp) === 0 && getYearsFns(timestamp) === 2000);
+export const isLastDay = ({timestamp}) => isAfter(timestamp, endOfYesterday());
+export const getPrevDate = ({timestamp}) =>
+  ((getDateFns(timestamp) !== 1) && (getDateFns(timestamp)-1));
+export const getNextDate = ({timestamp}) =>
+  ( (getDateFns(timestamp) !== getDateFns(endOfMonth(Date.now()))) && (getDateFns(timestamp)+1) );
+export const getPrevMonth = ({timestamp}) =>
+( (getMonthsFns(timestamp) !== 0) && (monthsList[getMonthsFns(timestamp)-1]) );
+export const getNextMonth = ({timestamp}) =>
+( (getMonthsFns(timestamp) !== 11) && (monthsList[getMonthsFns(timestamp)+1]) );
+export const getPrevYear = ({timestamp}) =>
+  ((getYearsFns(timestamp) !== 2000) && (getYearsFns(timestamp)-1));
+export const getNextYear = ({timestamp}) => 
+( (getYearsFns(timestamp) !== getYearsFns(Date.now())) && (getYearsFns(timestamp)+1) );
+export const getPrevHour = ({timestamp}) =>
+( (getHoursFns(timestamp) !== 0) && (zeroPad(getHoursFns(timestamp)-1)) );
+export const getNextHour = ({timestamp}) =>
+( (getHoursFns(timestamp) !== 23) && (zeroPad(getHoursFns(timestamp)+1)) );
+export const getPrevMinute = ({timestamp}) =>
+( (getMinutesFns(timestamp) !== 0) && (zeroPad(getMinutesFns(timestamp)-1)) );
+export const getNextMinute = ({timestamp}) =>
+( (getMinutesFns(timestamp) !== 59) && (zeroPad(getMinutesFns(timestamp)+1)) );
