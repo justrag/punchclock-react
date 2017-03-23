@@ -2,8 +2,9 @@ import { combineReducers } from 'redux';
 //import { routerReducer } from 'react-router-redux';
 import user, * as fromUser from './user';
 import timeselect, * as fromTimeselect from './timeselect';
-import clockface, * as fromClockface from './clockface';
 import shift, * as fromShift from './shift';
+import incidents, * as fromIncidents from './incidents';
+import { formatDate, formatTime } from '../libs/timeFunctions';
 
 export const getUserLogin = state => fromUser.getUserLogin(state.user);
 export const getUserToken = state => fromUser.getUserToken(state.user);
@@ -16,9 +17,11 @@ export const getTimeselectMinutes = state => fromTimeselect.getMinutes(state.tim
 export const getTimeselectHours = state => fromTimeselect.getHours(state.timeselect);
 
 export const getTimeselectSelected = state => fromTimeselect.getSelected(state.timeselect);
-export const getTimeselectString = state => fromTimeselect.getString(state.timeselect);
+export const getTimeselectTimestring = state => fromTimeselect.getTimestring(state.timeselect);
 
-export const getClockfaceDisplay = state => fromClockface.getDisplay(state.clockface);
+export const getTimeselectDisplay = state => fromTimeselect.getDisplay(state.timeselect);
+export const getTimeselectTimestamp = state => fromTimeselect.getTimestamp(state.timeselect);
+
 export const getShiftLength = state => fromShift.getLength(state.shift);
 
 export const isTimeselectFirstDay = state => fromTimeselect.isFirstDay(state.timeselect);
@@ -37,9 +40,18 @@ export const getTimeselectNextMinute = state => fromTimeselect.getNextMinute(sta
 const reducer = combineReducers({
   user,
   timeselect,
-  clockface,
   shift,
+  incidents,
 //  routing: routerReducer,
 });
 
 export default reducer;
+
+export const getEnterOnSelectedDate = state => {
+  const enter = fromIncidents.getEnterOnDate(state.incidents, formatDate(getTimeselectTimestamp(state)))
+  return (enter ? formatTime(enter) : false);
+}
+export const getExitOnSelectedDate = state => {
+  const exit = fromIncidents.getExitOnDate(state.incidents, formatDate(getTimeselectTimestamp(state)));
+  return (exit ? formatTime(exit) : false);
+}

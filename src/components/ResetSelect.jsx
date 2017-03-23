@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { timeselectReset as timeselectResetAction } from "../actions/";
-import { getTimeselectSelected, getClockfaceDisplay } from "../reducers/";
+import { getTimeselectSelected, getTimeselectDisplay } from "../reducers/";
 
 const ResetSelect = (
   {
@@ -16,7 +16,7 @@ const ResetSelect = (
 );
 const mapStateToProps = state => ({
   selected: getTimeselectSelected(state),
-  display: getClockfaceDisplay(state)
+  display: getTimeselectDisplay(state)
 });
 export default connect(mapStateToProps, {
   timeselectReset: () => timeselectResetAction(),

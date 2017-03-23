@@ -21,10 +21,10 @@ const ShiftLength = ({
       <a onClick={shiftlengthDecrease} className="button"><i className="fa fa-lg fa-minus"></i></a>
   <p>Dniówka: {shiftLength} godzin</p>
       <a onClick={shiftlengthIncrease} className="button"><i className="fa fa-lg fa-plus"></i></a>
-      { exited ?
+      { exitTime ?
        (<p>Czas pracy: <span>{workTime}</span></p>)
        :
-( ( entered && isItToday && gone ) ?
+( ( enterTime && isItToday && gone ) ?
   (<p>Pora do domu: <span>{absText}</span> temu</p>)
  : 
   (<p>Pora do domu za: <span>{absText}</span></p>)
@@ -35,9 +35,10 @@ const ShiftLength = ({
 const mapStateToProps = state => ({
   shiftLength: getShiftlength(state),
   isItToday: isTimeselectToday(state),
-  exited: state.day.exit, // bool if it exists
+  enterTime: getEnterOnSelectedDate(state),
+  exitTime: getExitOnSelectedDate(state),
+
   workTime: state.day.work.time,
-  entered: state.day.enter, // bool if it exists
   gone: state.timeleft.gone,
   absText: state.timeleft.absText,
 });

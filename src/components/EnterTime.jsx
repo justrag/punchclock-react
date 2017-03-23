@@ -1,42 +1,49 @@
 import React from "react";
 import { connect } from "react-redux";
-import { enterChange as enterChangeAction, enter as enterAction } from '../actions/';
+import { incidentSetEnter as incidentSetEnterAction } from "../actions/";
+import {
+  getTimeselectTimestring,
+  getEnterOnSelectedDate,
+  getTimeselectTimestamp
+} from "../reducers/";
 
 const EnterTime = (
   {
-    enterChange,
-    enter,
-    didEnterToday,
     enterTime,
-    timeString
+    selectTimestamp,
+    timeString,
+    incidentSetEnter
   }
 ) => (
   <div className="vertical">
     <p>
       Wejście:
       <span>
-        {didEnterToday ? enterTime : <span>&nbsp;&nbsp;:&nbsp;&nbsp;</span>}
+        {enterTime ? enterTime : <span>&nbsp;&nbsp;:&nbsp;&nbsp;</span>}
       </span>
     </p>
-    {didEnterToday
-      ? <a onClick={enterChange} className="button">
+    {enterTime
+      ? <a onClick={() => incidentSetEnter(selectTimestamp)} className="button">
           <i className="fa fa-lg fa-pencil" />
           <br />
           Jednak wszedłem o:
           <br />
           {timeString}
         </a>
-      : <a onClick={enter} className="button">
-          <i className="fa fa-lg fa-sign-in" /><br />Wchodzę o:<br />{timeString}
+      : <a onClick={() => incidentSetEnter(selectTimestamp)} className="button">
+          <i className="fa fa-lg fa-sign-in" />
+          <br />
+          Wchodzę o:
+          <br />
+          {timeString}
         </a>}
   </div>
 );
 const mapStateToProps = state => ({
-  enterTime: state.day.enterTime,
-  didEnterToday: state.day, //bool if it exists
-  timeString: state.timeselect.timeString,
+  enterTime: getEnterOnSelectedDate(state),
+  selectTimestamp: getTimeselectTimestamp(state),
+  timeString: getTimeselectTimestring(state)
 });
 export default connect(mapStateToProps, {
-  enterChange: () => enterChangeAction(),
-  enter: () => enterAction(),
+  incidentSetEnter: incidentSetEnterAction
 })(EnterTime);

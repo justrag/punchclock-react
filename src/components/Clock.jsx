@@ -2,14 +2,12 @@ import React from "react";
 import DateSelect from "./DateSelect";
 import ResetSelect from "./ResetSelect";
 import TimeSelect from "./TimeSelect";
-/*
 import EnterTime from "./EnterTime";
-import ShiftLength from "./ShiftLength";
 import ExitTime from "./ExitTime";
+/*
+import ShiftLength from "./ShiftLength";
 */
-const EnterTime = () => (<div>EnterTime</div>);
 const ShiftLength = () => (<div>ShiftLength</div>);
-const ExitTime = () => (<div>ExitTime</div>);
 
 const Clock = () => (
   <div>

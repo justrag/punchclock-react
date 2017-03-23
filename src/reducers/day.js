@@ -34,6 +34,6 @@ export default day;
           exit: false,
           work: false,
           notYetEntered: true
-        }; // State won't update if you return 'undefined' - must return something, at least 'false'
+        };
       }
     });

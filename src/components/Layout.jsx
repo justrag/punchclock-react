@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, Redirect, NavLink } from "react-router-dom";
 import { getUserLogin, getUserToken } from "../reducers/";
 import { logIn as logInAction, logOut as logOutAction } from "../actions/";
 import Clock from "./Clock";
@@ -29,9 +29,13 @@ const Layout = ({ logIn, logOut, token, userName }) => (
             </a>
           </nav>
           <section>
-            <Route path="/clock" component={Clock} />
-            <Route path="/stats" component={Stats} />
-            <Route path="/settings" component={Settings} />
+          <Switch>
+              <Route path="/clock" component={Clock} />
+              <Route path="/stats" component={Stats} />
+              <Route path="/settings" component={Settings} />
+              <Redirect from="/" to="/clock" />
+              <Route render={() => <h1>404</h1>} />
+            </Switch>
           </section>
           <footer>
             <p>Bardzo</p><p>Ciekawa</p><p>Reklama</p>

@@ -6,6 +6,8 @@ import getMonthsFns from "date-fns/get_month";
 import getDateFns from "date-fns/get_date";
 import getHoursFns from "date-fns/get_hours";
 import getMinutesFns from "date-fns/get_minutes";
+import min from "date-fns/min";
+import endOfDay from "date-fns/end_of_day";
 import endOfMonth from "date-fns/end_of_month";
 import endOfYesterday from 'date-fns/end_of_yesterday'
 import addDays from "date-fns/add_days";
@@ -14,16 +16,18 @@ import addYears from "date-fns/add_years";
 import addHours from "date-fns/add_hours";
 import addMinutes from "date-fns/add_minutes";
 import isAfter from 'date-fns/is_after';
+import plLocale from "date-fns/locale/pl";
+import format from "date-fns/format";
 import { formatTime } from "../libs/timeFunctions";
 import {
-//  clockTick,
   timeselectReset,
   timeselectChangeDay,
   timeselectChangeDate,
   timeselectChangeMonth,
   timeselectChangeYear,
   timeselectChangeMinute,
-  timeselectChangeHour,  
+  timeselectChangeHour,
+  timeselectSetTimestamp,
  } from "../actions/";
 
 const zeroPad = val => ( (val<10) ? `0${val}` : `${val}` );
@@ -40,32 +44,40 @@ const selected = createReducer(
     [timeselectChangeMinute]: () => true,
   }, false);
 
+const toMaxTimestamp = date => min(endOfDay(new Date()), date).valueOf();
+
 const timestamp = createReducer(
   {
-    // Need to put this in middleware
-    //[clockTick]: state => (state.selected ? state.timestamp : Date.now()),
-    [timeselectReset]: () => Date.now(),
-    [timeselectChangeDay]: (state, delta) => addDays(state, delta).valueOf(),
-    [timeselectChangeDate]: (state, delta) => addDays(state, delta).valueOf(),
-    [timeselectChangeMonth]: (state, delta) => addMonths(state, delta).valueOf(),
-    [timeselectChangeYear]: (state, delta) => addYears(state, delta).valueOf(),
-    [timeselectChangeHour]: (state, delta) => addHours(state, delta).valueOf(),
-    [timeselectChangeMinute]: (state, delta) => addMinutes(state, delta).valueOf(),
+    [timeselectSetTimestamp]: (state, {selected, newTimestamp}) => ( selected ? state : newTimestamp ),
+    [timeselectChangeDay]: (state, delta) => toMaxTimestamp(addDays(state, delta)),
+    [timeselectChangeDate]: (state, delta) => toMaxTimestamp(addDays(state, delta)),
+    [timeselectChangeMonth]: (state, delta) => toMaxTimestamp(addMonths(state, delta)),
+    [timeselectChangeYear]: (state, delta) => toMaxTimestamp(addYears(state, delta)),
+    [timeselectChangeHour]: (state, delta) => toMaxTimestamp(addHours(state, delta)),
+    [timeselectChangeMinute]: (state, delta) => toMaxTimestamp(addMinutes(state, delta)),
   },
   Date.now());
-//  if (!isAgainstLimits) oldm=addTime(oldm, delta, period);
-//  const m = min(endOfDay(new Date()), oldm);
-//  return m.valueOf();
+
+const currTimestamp = createReducer(
+  {
+    [timeselectSetTimestamp]: (state, {newTimestamp}) => newTimestamp,
+  },
+  Date.now()
+);
+
+export const getDisplay = state => format(state.currTimestamp, "ddd D MMM YYYY, HH:mm:ss", {locale: plLocale});
 
 const timeselect = combineReducers({
   selected,
   timestamp,
+  currTimestamp
 });
 export default timeselect;
 
+export const getTimestamp = state => state.timestamp;
 export const getSelected = state => state.selected;
 export const isItToday = state => isToday(state.timestamp);
-export const getString = state => formatTime(state.timestamp);
+export const getTimestring = state => formatTime(state.timestamp);
 
 export const getDate = state => getDateFns(state.timestamp);
 export const getMonths = state => monthsList[getMonthsFns(state.timestamp)];
