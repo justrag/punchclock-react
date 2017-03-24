@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
+import addHours from 'date-fns/add_hours';
 //import { routerReducer } from 'react-router-redux';
 import user, * as fromUser from './user';
 import timeselect, * as fromTimeselect from './timeselect';
-import shift, * as fromShift from './shift';
 import incidents, * as fromIncidents from './incidents';
-import { formatDate, formatTime } from '../libs/timeFunctions';
+import { formatDate, formatTime, formatDifferenceInTimestamps, absDifferenceInTimestamps } from '../libs/timeFunctions';
 
 export const getUserLogin = state => fromUser.getUserLogin(state.user);
 export const getUserToken = state => fromUser.getUserToken(state.user);
@@ -21,9 +21,9 @@ export const getTimeselectTimestring = state => fromTimeselect.getTimestring(sta
 
 export const getTimeselectDisplay = state => fromTimeselect.getDisplay(state.timeselect);
 export const getTimeselectTimestamp = state => fromTimeselect.getTimestamp(state.timeselect);
+export const getTimeselectCurrentTimestamp = state => fromTimeselect.getCurrentTimestamp(state.timeselect);
 
-export const getShiftLength = state => fromShift.getLength(state.shift);
-
+export const getTimeselectShiftlength = state => fromTimeselect.getShiftlength(state.timeselect);
 export const isTimeselectFirstDay = state => fromTimeselect.isFirstDay(state.timeselect);
 export const isTimeselectLastDay = state => fromTimeselect.isLastDay(state.timeselect);
 export const getTimeselectPrevDate = state => fromTimeselect.getPrevDate(state.timeselect);
@@ -40,18 +40,57 @@ export const getTimeselectNextMinute = state => fromTimeselect.getNextMinute(sta
 const reducer = combineReducers({
   user,
   timeselect,
-  shift,
   incidents,
 //  routing: routerReducer,
 });
 
 export default reducer;
 
+export const getEnterTimestampOnSelectedDate = state => fromIncidents.getEnterOnDate(state.incidents, formatDate(getTimeselectTimestamp(state)));
+
 export const getEnterOnSelectedDate = state => {
-  const enter = fromIncidents.getEnterOnDate(state.incidents, formatDate(getTimeselectTimestamp(state)))
+  const enter = getEnterTimestampOnSelectedDate(state);
   return (enter ? formatTime(enter) : false);
 }
+
+export const getExitTimestampOnSelectedDate = state => fromIncidents.getExitOnDate(state.incidents, formatDate(getTimeselectTimestamp(state)));
+
 export const getExitOnSelectedDate = state => {
-  const exit = fromIncidents.getExitOnDate(state.incidents, formatDate(getTimeselectTimestamp(state)));
+  const exit = getExitTimestampOnSelectedDate(state);
   return (exit ? formatTime(exit) : false);
 }
+
+export const getShiftLengthOnSelectedDate = state => fromIncidents.getShiftlengthOnDate(state.incidents, formatDate(getTimeselectTimestamp(state)));
+
+export const getWorktimeForSelectedDate = (state) => 
+ formatDifferenceInTimestamps(
+  addHours(
+    getEnterTimestampOnSelectedDate(state),
+    getShiftLengthOnSelectedDate(state)
+    ).valueOf(),
+  getExitTimestampOnSelectedDate(state));
+
+/*
+export const getAbsTimeTillLeave = (state) =>
+ absDifferenceInTimestamps(
+  addHours(
+    getEnterTimestampOnSelectedDate(state),
+    getShiftLengthOnSelectedDate(state)
+    ).valueOf(),
+  getExitTimestampOnSelectedDate(state),
+  true
+  );
+  */
+export const getAbsTimeTillLeave = (state) => {
+  const enter = getEnterTimestampOnSelectedDate(state);
+  const exit = getTimeselectCurrentTimestamp(state);
+  const shiftlength = getTimeselectShiftlength(state);
+  const dueDate = addHours(enter,shiftlength);
+return absDifferenceInTimestamps(dueDate.valueOf(), exit, true);
+};
+export const isOvertime = (state) => (
+    addHours(
+    getEnterTimestampOnSelectedDate(state),
+    getTimeselectShiftlength(state)
+    ).valueOf() < getTimeselectCurrentTimestamp(state)
+  );

@@ -8,7 +8,11 @@ const ids = createReducer({
 }, []);
 const data = createReducer({
   [incidentSetEnter]: (state, {timestamp, numericalDate}) => R.assocPath([numericalDate, 'enter'], timestamp, state),
-  [incidentSetExit]: (state, {timestamp, numericalDate}) => R.assocPath([numericalDate, 'exit'], timestamp, state),
+  [incidentSetExit]: (state, {timestamp, numericalDate, shiftLength}) =>
+  R.compose(
+    R.assocPath([numericalDate, 'exit'], timestamp),
+    R.assocPath([numericalDate, 'shiftlength'], shiftLength)
+    )(state),
 }, {});
 
 const incidents = combineReducers({ids, data});
@@ -16,3 +20,4 @@ export default incidents;
 
 export const getEnterOnDate = (state, numericalDate) => R.path(['data', numericalDate, 'enter'], state);
 export const getExitOnDate = (state, numericalDate) => R.path(['data', numericalDate, 'exit'], state);
+export const getShiftlengthOnDate = (state, numericalDate) => R.path(['data', numericalDate, 'shiftlength'], state);

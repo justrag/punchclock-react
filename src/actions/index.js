@@ -9,6 +9,9 @@ export const timeselectChange = createAction(
   (period,direction) => ({ period, direction })
 );
 */
+
+export const timeselectShiftlengthIncrease = createAction("TIMESELECT_SHIFTLENGTH_INCREASE");
+export const timeselectShiftlengthDecrease = createAction("TIMESELECT_SHIFTLENGTH_DECREASE");
 export const timeselectChangeDay = createAction("TIMESELECT_CHANGE_DAY");
 export const timeselectChangeDate = createAction("TIMESELECT_CHANGE_DATE");
 export const timeselectChangeMonth = createAction("TIMESELECT_CHANGE_MONTH");
@@ -18,7 +21,8 @@ export const timeselectChangeMinute = createAction("TIMESELECT_CHANGE_MINUTE");
 
 // should be async to API, just put it in store for now
 export const incidentSetEnter = createAction("INCIDENT_SET_ENTER", timestamp => ({timestamp, numericalDate: formatDate(timestamp)}));
-export const incidentSetExit = createAction("INCIDENT_SET_EXIT", timestamp => ({timestamp, numericalDate: formatDate(timestamp)}));
+export const incidentSetExit = createAction("INCIDENT_SET_EXIT",
+  (timestamp, shiftLength) => ({timestamp, numericalDate: formatDate(timestamp), shiftLength}));
 
 export const clockTick = createAction("CLOCK_TICK", null, () => ({tick: true})); // to be intercepted by clockTick middleware
 export const timeselectSetTimestamp = createAction("TIMESELECT_SET_TIMESTAMP", (selected, newTimestamp) => ({selected, newTimestamp}));

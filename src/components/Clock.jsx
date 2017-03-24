@@ -4,10 +4,7 @@ import ResetSelect from "./ResetSelect";
 import TimeSelect from "./TimeSelect";
 import EnterTime from "./EnterTime";
 import ExitTime from "./ExitTime";
-/*
 import ShiftLength from "./ShiftLength";
-*/
-const ShiftLength = () => (<div>ShiftLength</div>);
 
 const Clock = () => (
   <div>

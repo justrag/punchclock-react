@@ -1,48 +1,55 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React from "react";
+import { connect } from "react-redux";
 import {
-  shiftlengthIncrease as shiftlengthIncreaseAction,
-  shiftlengthDecrease as shiftlengthDecreaseAction
-} from '../actions/';
-import { getShiftLength, isTimeselectToday } from '../reducers/';
+  timeselectShiftlengthIncrease as shiftlengthIncreaseAction,
+  timeselectShiftlengthDecrease as shiftlengthDecreaseAction
+} from "../actions/";
+import {
+  getTimeselectShiftlength,
+  isTimeselectToday,
+  getEnterOnSelectedDate,
+  getExitOnSelectedDate,
+  getWorktimeForSelectedDate,
+  isOvertime,
+  getAbsTimeTillLeave
+} from "../reducers/";
 
-const ShiftLength = ({
-  shiftlengthIncrease,
-  shiftlengthDecrease,
-  shiftLength,
-  exited,
-  workTime,
-  entered,
-  isItToday,
-  gone,
-  absText,
-}) => (
+const ShiftLength = (
+  {
+    shiftLength,
+    isItToday,
+    enterTime,
+    exitTime,
+    workTime,
+    overtime,
+    timeLeft,
+    shiftlengthIncrease,
+    shiftlengthDecrease
+  }
+) => (
   <div className="vertical topalign">
-      <a onClick={shiftlengthDecrease} className="button"><i className="fa fa-lg fa-minus"></i></a>
-  <p>Dniówka: {shiftLength} godzin</p>
-      <a onClick={shiftlengthIncrease} className="button"><i className="fa fa-lg fa-plus"></i></a>
-      { exitTime ?
-       (<p>Czas pracy: <span>{workTime}</span></p>)
-       :
-( ( enterTime && isItToday && gone ) ?
-  (<p>Pora do domu: <span>{absText}</span> temu</p>)
- : 
-  (<p>Pora do domu za: <span>{absText}</span></p>)
-  ) 
-}
-</div>
+    <a onClick={shiftlengthDecrease} className="button">
+      <i className="fa fa-lg fa-minus" />
+    </a>
+    <p>Dniówka: {shiftLength} godzin</p>
+    <a onClick={shiftlengthIncrease} className="button">
+      <i className="fa fa-lg fa-plus" />
+    </a>
+    {enterTime && exitTime && <p>Czas pracy: <span>{workTime}</span></p>}
+    {enterTime && !exitTime && isItToday && overtime && <p>Pora do domu: <span>{timeLeft}</span> temu</p>}
+    {enterTime && !exitTime && isItToday && !overtime && <p>Pora do domu za: <span>{timeLeft}</span></p>}
+  </div>
 );
 const mapStateToProps = state => ({
-  shiftLength: getShiftlength(state),
+  shiftLength: getTimeselectShiftlength(state),
   isItToday: isTimeselectToday(state),
   enterTime: getEnterOnSelectedDate(state),
   exitTime: getExitOnSelectedDate(state),
-
-  workTime: state.day.work.time,
-  gone: state.timeleft.gone,
-  absText: state.timeleft.absText,
+  workTime: getWorktimeForSelectedDate(state),
+  overtime: isOvertime(state),
+  timeLeft: getAbsTimeTillLeave(state)
 });
 export default connect(mapStateToProps, {
   shiftlengthIncrease: () => shiftlengthIncreaseAction(),
-  shiftlengthDecrease: () => shiftlengthDecreaseAction(),
-   })(ShiftLength);
+  shiftlengthDecrease: () => shiftlengthDecreaseAction()
+})(ShiftLength);

@@ -18,7 +18,7 @@ import addMinutes from "date-fns/add_minutes";
 import isAfter from 'date-fns/is_after';
 import plLocale from "date-fns/locale/pl";
 import format from "date-fns/format";
-import { formatTime } from "../libs/timeFunctions";
+import { formatTime, zeroPad } from "../libs/timeFunctions";
 import {
   timeselectReset,
   timeselectChangeDay,
@@ -28,9 +28,10 @@ import {
   timeselectChangeMinute,
   timeselectChangeHour,
   timeselectSetTimestamp,
+  timeselectShiftlengthIncrease,
+  timeselectShiftlengthDecrease,
  } from "../actions/";
 
-const zeroPad = val => ( (val<10) ? `0${val}` : `${val}` );
 const monthsList=['sty','lut','mar','kwi','maj','cze','lip','sie','wrz','paź','lis','gru'];
 
 const selected = createReducer(
@@ -65,16 +66,28 @@ const currTimestamp = createReducer(
   Date.now()
 );
 
-export const getDisplay = state => format(state.currTimestamp, "ddd D MMM YYYY, HH:mm:ss", {locale: plLocale});
+const shiftlength = createReducer(
+  {
+    [timeselectShiftlengthIncrease]: state => ((state <= 11) ? state + 1 : state),
+    [timeselectShiftlengthDecrease]: state => ((state >= 2) ? state - 1 : state),
+  },
+  8
+);
 
 const timeselect = combineReducers({
   selected,
   timestamp,
-  currTimestamp
+  currTimestamp,
+  shiftlength,
 });
+
 export default timeselect;
 
+export const getDisplay = state => format(state.currTimestamp, "ddd D MMM YYYY, HH:mm:ss", {locale: plLocale});
+export const getShiftlength = state => state.shiftlength;
+
 export const getTimestamp = state => state.timestamp;
+export const getCurrentTimestamp = state => state.currTimestamp;
 export const getSelected = state => state.selected;
 export const isItToday = state => isToday(state.timestamp);
 export const getTimestring = state => formatTime(state.timestamp);
