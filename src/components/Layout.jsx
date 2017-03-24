@@ -7,8 +7,6 @@ import Clock from "./Clock";
 /* import Stats from "./Stats"; */
 import Settings from "./Settings";
 
-const Stats = () => <div>Stats</div>;
-
 const Layout = ({ logIn, logOut, token, userName }) => (
   <Router>
     {!token
