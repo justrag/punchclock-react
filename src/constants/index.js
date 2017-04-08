@@ -9,3 +9,5 @@ export const SECONDS = "seconds";
 export const PLUS = "plus";
 export const MINUS = "minus";
 */
+
+export const API_SERVER = "http://localhost:8080/";

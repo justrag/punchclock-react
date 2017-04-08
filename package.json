@@ -16,7 +16,8 @@
     "react-redux": "^5.0.3",
     "react-router-dom": "^4.0.0",
     "redux": "^3.6.0",
-    "redux-act": "^1.1.1"
+    "redux-act": "^1.1.1",
+    "redux-remote-resource": "^0.3.0"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -2,15 +2,18 @@ import React from "react";
 import { connect } from "react-redux";
 import { BrowserRouter as Router, Route, Switch, Redirect, NavLink } from "react-router-dom";
 import { getUserLogin, getUserToken } from "../reducers/";
-import { logIn as logInAction, logOut as logOutAction } from "../actions/";
+import { logOut as logOutAction } from "../actions/";
 import Clock from "./Clock";
 /* import Stats from "./Stats"; */
 import Settings from "./Settings";
+import Login from "./Login";
 
-const Layout = ({ logIn, logOut, token, userName }) => (
+const Stats = () => <h1>Stats</h1>;
+
+const Layout = ({ logOut, token, userName }) => (
   <Router>
     {!token
-      ? <button onClick={logIn}>LOGIN</button>
+      ? <Login />
       : <div className="wrapper">
           <nav>
             <NavLink to="/clock">
@@ -46,6 +49,5 @@ const mapStateToProps = state => ({
   userName: getUserLogin(state)
 });
 export default connect(mapStateToProps, {
-  logIn: () => logInAction(),
   logOut: () => logOutAction()
 })(Layout);
