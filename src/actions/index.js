@@ -29,9 +29,12 @@ export const logInFailure = createAction("LOG_IN_FAILURE");
 
 // POST request
 export const logIn = (login, password) => ({
+//  type: "ASYNC",
+//  "RemoteResource": {
   [RemoteResource]: {
     uri: `${API_SERVER}/auth/login`,
     method: 'post',
+    headers: { 'Accept': 'application/json' },
     body: {login, password},
     lifecycle: {
       request: logInRequest.getType(),

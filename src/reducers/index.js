@@ -9,6 +9,7 @@ import { formatDate, formatTime, formatDifferenceInTimestamps, absDifferenceInTi
 export const getUserLogin = state => fromUser.getUserLogin(state.user);
 export const getUserToken = state => fromUser.getUserToken(state.user);
 export const isUserLoading = state => fromUser.isUserLoading(state.user);
+export const getLoginError = state => fromUser.getLoginError(state.user);
 
 export const isTimeselectToday = state => fromTimeselect.isItToday(state.timeselect);
 export const getTimeselectDate = state => fromTimeselect.getDate(state.timeselect);

@@ -11,13 +11,14 @@
     "date-fns": "^1.28.1",
     "font-awesome": "^4.7.0",
     "ramda": "^0.23.0",
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
     "react-redux": "^5.0.3",
-    "react-router-dom": "^4.0.0",
+    "react-router-dom": "^4.1.0",
     "redux": "^3.6.0",
     "redux-act": "^1.1.1",
-    "redux-remote-resource": "^0.3.0"
+    "redux-remote-resource": "^0.3.0",
+    "redux-thunk": "^2.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
