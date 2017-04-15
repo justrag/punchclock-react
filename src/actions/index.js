@@ -46,6 +46,27 @@ export const logIn = (login, password) => ({
   }
 });
 
+export const incidentRequest = createAction("INCIDENT_REQUEST");
+export const incidentSuccess = createAction("INCIDENT_SUCCESS", data => ({data}));
+export const incidentFailure = createAction("INCIDENT_FAILURE");
+export const getIncident = (date) => ({
+  [RemoteResource]: {
+    uri: `${API_SERVER}/incidents/${date}`,
+    method: 'post',
+    headers: { 'Accept': 'application/json',
+    Authorization: `Bearer ${jwtToken}` },
+    body: {login, password},
+    lifecycle: {
+      request: incidentRequest.getType(),
+      failure: incidentFailure.getType(),
+      success: (data, dispatch) => {
+        dispatch(incidentSuccess(data.login, data.token));
+      },
+    }
+  }
+});
+
+
 /*
 // Simple GET request
 export function fetchPosts(topic) {

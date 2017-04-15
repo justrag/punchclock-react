@@ -8,16 +8,16 @@
     "redux-immutable-state-invariant": "^2.0.0"
   },
   "dependencies": {
-    "date-fns": "^1.28.1",
+    "date-fns": "^1.28.3",
     "font-awesome": "^4.7.0",
     "ramda": "^0.23.0",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
-    "react-redux": "^5.0.3",
-    "react-router-dom": "^4.1.0",
+    "react-redux": "^5.0.4",
+    "react-router-dom": "^4.1.1",
     "redux": "^3.6.0",
     "redux-act": "^1.1.1",
-    "redux-remote-resource": "^0.3.0",
+    "redux-remote-resource": "^0.3.2",
     "redux-thunk": "^2.2.0"
   },
   "scripts": {
