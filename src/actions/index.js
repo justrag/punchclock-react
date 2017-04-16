@@ -2,6 +2,7 @@ import { createAction } from "redux-act";
 import { RemoteResource } from 'redux-remote-resource';
 import { formatDate } from "../libs/timeFunctions";
 import { API_SERVER } from '../constants/';
+import { getUserToken } from '../reducers/';
 
 export const timeselectReset = createAction("TIMESELECT_RESET");
 export const timeselectShiftlengthIncrease = createAction("TIMESELECT_SHIFTLENGTH_INCREASE");
@@ -39,7 +40,7 @@ export const logIn = (login, password) => ({
     lifecycle: {
       request: logInRequest.getType(),
       failure: logInFailure.getType(),
-      success: (data, dispatch) => {
+      success: ({data}, dispatch) => {
         dispatch(logInSuccess(data.login, data.token));
       },
     }
@@ -52,15 +53,16 @@ export const incidentFailure = createAction("INCIDENT_FAILURE");
 export const getIncident = (date) => ({
   [RemoteResource]: {
     uri: `${API_SERVER}/incidents/${date}`,
-    method: 'post',
-    headers: { 'Accept': 'application/json',
-    Authorization: `Bearer ${jwtToken}` },
-    body: {login, password},
+    method: 'get',
+    headers: state => ({
+      Accept: 'application/json',
+      Authorization: `Bearer ${getUserToken(state)}`
+    }),
     lifecycle: {
       request: incidentRequest.getType(),
       failure: incidentFailure.getType(),
-      success: (data, dispatch) => {
-        dispatch(incidentSuccess(data.login, data.token));
+      success: ({data}, dispatch) => {
+        dispatch(incidentSuccess(data));
       },
     }
   }

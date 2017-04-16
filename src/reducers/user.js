@@ -1,10 +1,11 @@
+import { combineReducers } from 'redux';
 import { createReducer } from "redux-act";
 import { logInRequest, logInSuccess, logInFailure, logOut } from "../actions/";
 
+
+/*
 const user = createReducer(
   {
-/*    [logIn]: () => ({ login: "johnny", token: "SOMETOKEN" }), */
-
     [logInRequest]: () => ({ login: false, token: false, loading: true, error: false }),
     [logInFailure]: () => ({ login: false, token: false, loading: false, error: true }),
     [logInSuccess]: (login, token) => ({ login, token, loading: false, error: false }),
@@ -12,6 +13,43 @@ const user = createReducer(
   },
   { login: false, token: false, loading: false, error: false }
 );
+*/
+
+const login = createReducer({
+  [logInRequest]: () => false,
+  [logInFailure]: () => false,
+  [logInSuccess]: (login, token) => login,
+  [logOut]: () => false
+}, false);
+
+const token = createReducer({
+  [logInRequest]: () => false,
+  [logInFailure]: () => false,
+  [logInSuccess]: (login, token) => token,
+  [logOut]: () => false
+}, false);
+
+const loading = createReducer({
+  [logInRequest]: () => true,
+  [logInFailure]: () => false,
+  [logInSuccess]: () => false,
+  [logOut]: () => false
+}, false);
+
+const error = createReducer({
+  [logInRequest]: () => false,
+  [logInFailure]: () => true,
+  [logInSuccess]: () => false,
+  [logOut]: () => false
+}, false);
+
+const user = combineReducers({
+  login,
+  token,
+  loading,
+  error
+  });
+
 export default user;
 
 export const getUserLogin = state => state.login;
