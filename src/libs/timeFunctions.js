@@ -8,7 +8,11 @@ import differenceInSeconds from 'date-fns/difference_in_seconds';
 
 export const zeroPad = val => ( (val<10) ? `0${val}` : `${val}` );
 
+/*
 export const formatDate = timestamp => format(timestamp, "YYYYMMDD");
+export const  = timestamp => format(timestamp, "YYYY-MM-DD");
+*/
+export const formatDate = timestamp => format(timestamp, "YYYY-MM-DD");
 export const formatTime = timestamp => format(timestamp, "HH:mm");
 
 export const todaysDate = () => formatDate(new Date());

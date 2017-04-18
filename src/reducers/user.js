@@ -18,14 +18,14 @@ const user = createReducer(
 const login = createReducer({
   [logInRequest]: () => false,
   [logInFailure]: () => false,
-  [logInSuccess]: (login, token) => login,
+  [logInSuccess]: (state, {login, token}) => login,
   [logOut]: () => false
 }, false);
 
 const token = createReducer({
   [logInRequest]: () => false,
   [logInFailure]: () => false,
-  [logInSuccess]: (login, token) => token,
+  [logInSuccess]: (state, {login, token}) => token,
   [logOut]: () => false
 }, false);
 

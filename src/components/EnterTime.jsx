@@ -1,18 +1,20 @@
 import React from "react";
 import { connect } from "react-redux";
-import { incidentSetEnter as incidentSetEnterAction } from "../actions/";
+import { postIncident as postIncidentAction } from "../actions/";
 import {
   getTimeselectTimestring,
   getEnterOnSelectedDate,
-  getTimeselectTimestamp
+  getTimeselectTimestamp,
+  getTimeselectShiftlength
 } from "../reducers/";
 
 const EnterTime = (
   {
     enterTime,
     selectTimestamp,
+    selectShiftlength,
     timeString,
-    incidentSetEnter
+    postIncident
   }
 ) => (
   <div className="vertical">
@@ -23,14 +25,14 @@ const EnterTime = (
       </span>
     </p>
     {enterTime
-      ? <a onClick={() => incidentSetEnter(selectTimestamp)} className="button">
+      ? <a onClick={() => postIncident(selectTimestamp, selectShiftlength)} className="button">
           <i className="fa fa-lg fa-pencil" />
           <br />
           Jednak wszedłem o:
           <br />
           {timeString}
         </a>
-      : <a onClick={() => incidentSetEnter(selectTimestamp)} className="button">
+      : <a onClick={() => postIncident(selectTimestamp, selectShiftlength)} className="button">
           <i className="fa fa-lg fa-sign-in" />
           <br />
           Wchodzę o:
@@ -42,8 +44,9 @@ const EnterTime = (
 const mapStateToProps = state => ({
   enterTime: getEnterOnSelectedDate(state),
   selectTimestamp: getTimeselectTimestamp(state),
+  selectShiftlength: getTimeselectShiftlength(state),
   timeString: getTimeselectTimestring(state)
 });
 export default connect(mapStateToProps, {
-  incidentSetEnter: incidentSetEnterAction
+  postIncident: postIncidentAction
 })(EnterTime);

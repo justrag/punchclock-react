@@ -1,17 +1,20 @@
 import { createReducer } from 'redux-act';
 import { combineReducers } from 'redux';
 import R from "ramda";
-import { incidentSetEnter, incidentSetExit } from '../actions/'
+import { incidentSetEnter, incidentSetExit, incidentSuccess } from '../actions/';
+import { formatDate } from "../libs/timeFunctions";
 
 const ids = createReducer({
-  [incidentSetEnter]: (state, {timestamp, numericalDate}) => R.uniq([...state, numericalDate]),
+  [incidentSuccess]: (state, {date}) => R.uniq([...state, date]),
+  [incidentSetEnter]: (state, {timestamp}) => R.uniq([...state, formatDate(timestamp)]),
 }, []);
 const data = createReducer({
-  [incidentSetEnter]: (state, {timestamp, numericalDate}) => R.assocPath([numericalDate, 'enter'], timestamp, state),
-  [incidentSetExit]: (state, {timestamp, numericalDate, shiftLength}) =>
+  [incidentSuccess]: (state, {date, enter}) => R.assocPath([date, 'enter'], new Date(`${date} ${enter}`).valueOf(), state),
+  [incidentSetEnter]: (state, {timestamp}) => R.assocPath([formatDate(timestamp), 'enter'], timestamp, state),
+  [incidentSetExit]: (state, {timestamp, shiftLength}) =>
   R.compose(
-    R.assocPath([numericalDate, 'exit'], timestamp),
-    R.assocPath([numericalDate, 'shiftlength'], shiftLength)
+    R.assocPath([formatDate(timestamp), 'exit'], timestamp),
+    R.assocPath([formatDate(timestamp), 'shiftlength'], shiftLength)
     )(state),
 }, {});
 
