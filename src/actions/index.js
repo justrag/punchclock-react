@@ -28,7 +28,6 @@ export const logInRequest = createAction("LOG_IN_REQUEST");
 export const logInSuccess = createAction("LOG_IN_SUCCESS", (login, token) => ({login, token}));
 export const logInFailure = createAction("LOG_IN_FAILURE", error => ({error}));
 
-// POST request
 export const logIn = (login, password) => ({
   [RemoteResource]: {
     uri: `${API_SERVER}/auth/login`,
@@ -50,12 +49,6 @@ export const getIncident = (date) => ({
   [RemoteResource]: {
     uri: `${API_SERVER}/incidents/${date}`,
     method: 'get',
-    /*
-    headers: state => ({
-      Accept: 'application/json',
-      Authorization: `Bearer ${getUserToken(state)}`
-    }),
-    */
     headers: {
       Accept: 'application/json',
       Authorization: state => `Bearer ${getUserToken(state)}`,

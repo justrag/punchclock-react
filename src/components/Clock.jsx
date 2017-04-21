@@ -18,7 +18,7 @@ class Clock extends Component {
 
   componentDidMount() { this.props.getIncident(this.props.selectedDate); }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(nextProps) {
 //    console.debug("old: %o, new: %o",this.props.selectedDate,nextProps.selectedDate);
     if (nextProps.selectedDate !== this.props.selectedDate) this.props.getIncident(nextProps.selectedDate);
   }
