@@ -42,10 +42,10 @@ export const logIn = (login, password) => ({
   }
 });
 
-export const incidentRequest = createAction("INCIDENT_REQUEST");
-export const incidentSuccess = createAction("INCIDENT_SUCCESS", data => ({...data}));
-export const incidentFailure = createAction("INCIDENT_FAILURE", error => ({error}));
-export const getIncident = (date) => ({
+export const fetchIncidentRequest = createAction("FETCH_INCIDENT_REQUEST", date => ({date}));
+export const fetchIncidentSuccess = createAction("FETCH_INCIDENT_SUCCESS", data => ({...data}));
+export const fetchIncidentFailure = createAction("FETCH_INCIDENT_FAILURE", error => ({error}));
+export const fetchIncident = (date) => ({
   [RemoteResource]: {
     uri: `${API_SERVER}/incidents/${date}`,
     method: 'get',
@@ -54,30 +54,53 @@ export const getIncident = (date) => ({
       Authorization: state => `Bearer ${getUserToken(state)}`,
     },
     lifecycle: {
-      request: incidentRequest.getType(),
-      failure: (error, dispatch, data, response) => dispatch(incidentFailure(error)),
+      request: dispatch => dispatch(fetchIncidentRequest(formatDate(timestamp))),
+      failure: (error, dispatch, data, response) => dispatch(fetchIncidentFailure(error)),
       success: (payload, dispatch, response) => {
-        dispatch(incidentSuccess(payload.data));
+        dispatch(fetchIncidentSuccess(payload.data));
       },
     }
   }
 });
-export const postIncidentRequest = createAction("POST_INCIDENT_REQUEST");
-export const postIncidentSuccess = createAction("POST_INCIDENT_SUCCESS", data => ({...data}));
-export const postIncidentFailure = createAction("POST_INCIDENT_FAILURE", error => ({error}));
-export const postIncident = (timestamp, shiftlength) => ({
+export const saveIncidentRequest = createAction("SAVE_INCIDENT_REQUEST", date => ({date}));
+export const saveIncidentSuccess = createAction("SAVE_INCIDENT_SUCCESS", data => ({...data}));
+export const saveIncidentFailure = createAction("SAVE_INCIDENT_FAILURE", error => ({error}));
+export const saveIncident = (timestamp, shiftlength) => ({
   [RemoteResource]: {
-    uri: `${API_SERVER}/incidents`,
-    method: 'post',
+    uri: `${API_SERVER}/incidents/${formatDate(timestamp)}`,
+    method: 'put',
     headers: {
       Accept: 'application/json',
       Authorization: state => `Bearer ${getUserToken(state)}`,
     },
-    body: {date: formatDate(timestamp), enter: formatTime(timestamp), shiftlength },
+    body: {enter: formatTime(timestamp), shiftlength},
     lifecycle: {
-      request: postIncidentRequest.getType(),
-      failure: (error, dispatch, data, response) => dispatch(postIncidentFailure(error)),
-      success: (payload, dispatch, response) => dispatch(postIncidentSuccess(payload.data)),
+      request: dispatch => dispatch(saveIncidentRequest(formatDate(timestamp))),
+      failure: (error, dispatch, data, response) => dispatch(saveIncidentFailure(error)),
+      success: (payload, dispatch, response) => dispatch(saveIncidentSuccess(payload.data)),
     }
   }
 });
+export const updateIncidentRequest = createAction("UPDATE_INCIDENT_REQUEST", date => ({date}));
+export const updateIncidentSuccess = createAction("UPDATE_INCIDENT_SUCCESS", data => ({...data}));
+export const updateIncidentFailure = createAction("UPDATE_INCIDENT_FAILURE", error => ({error}));
+export const updateIncident = (date, updateObject) => ({
+  [RemoteResource]: {
+    uri: `${API_SERVER}/incidents/${date}`,
+    method: 'patch',
+    headers: {
+      Accept: 'application/json',
+      Authorization: state => `Bearer ${getUserToken(state)}`,
+    },
+    body: updateObject,
+    lifecycle: {
+      request: dispatch => dispatch(updateIncidentRequest(formatDate(timestamp))),
+      failure: (error, dispatch, data, response) => dispatch(updateIncidentFailure(error)),
+      success: (payload, dispatch, response) => dispatch(updateIncidentSuccess(payload.data)),
+    }
+  }
+});
+export const updateExit = timestamp =>
+  updateIncident(formatTime(timestamp), {exit: formatTime(timestamp)});
+export const updateShiftlength = (timestamp, shiftlength) =>
+  updateIncident(formatTime(timestamp), {shiftlength: shiftlength});

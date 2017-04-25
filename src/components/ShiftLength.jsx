@@ -2,7 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 import {
   timeselectShiftlengthIncrease as shiftlengthIncreaseAction,
-  timeselectShiftlengthDecrease as shiftlengthDecreaseAction
+  timeselectShiftlengthDecrease as shiftlengthDecreaseAction,
+  updateShiftlength as updateShiftlengthAction
 } from "../actions/";
 import {
   getTimeselectShiftlength,
@@ -24,14 +25,21 @@ const ShiftLength = (
     overtime,
     timeLeft,
     shiftlengthIncrease,
-    shiftlengthDecrease
+    shiftlengthDecrease,
+    updateShiftlength
   }
 ) => (
   <div className="vertical topalign">
     <a onClick={shiftlengthDecrease} className="button">
       <i className="fa fa-lg fa-minus" />
     </a>
-    <p>Dniówka: {shiftLength} godzin</p>
+<a onClick={() => updateShiftlength(selectTimestamp, shiftLength)} className="button">
+          <i className="fa fa-lg fa-pencil" />
+          <br />
+          Dzisiaj pracuję:
+          <br />
+          {shiftLength} godzin
+        </a>
     <a onClick={shiftlengthIncrease} className="button">
       <i className="fa fa-lg fa-plus" />
     </a>
@@ -50,6 +58,7 @@ const mapStateToProps = state => ({
   timeLeft: getAbsTimeTillLeave(state)
 });
 export default connect(mapStateToProps, {
-  shiftlengthIncrease: () => shiftlengthIncreaseAction(),
-  shiftlengthDecrease: () => shiftlengthDecreaseAction()
+  shiftlengthIncrease: shiftlengthIncreaseAction,
+  shiftlengthDecrease: shiftlengthDecreaseAction,
+  updateShiftlength: updateShiftlengthAction
 })(ShiftLength);
