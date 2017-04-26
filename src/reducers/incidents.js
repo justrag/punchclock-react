@@ -31,20 +31,20 @@ const data = createReducer({
 }, {});
 
 /*
-const ids = createReducer({
-  [fetchIncidentSuccess]: (state, {date}) => R.uniq([...state, date]),
-  [incidentSetEnter]: (state, {timestamp}) => R.uniq([...state, formatDate(timestamp)]),
-}, []);
-const data = createReducer({
-  [fetchIncidentSuccess]: (state, {date, enter}) => R.assocPath([date, 'enter'], new Date(`${date} ${enter}`).valueOf(), state),
-  [incidentSetEnter]: (state, {timestamp}) => R.assocPath([formatDate(timestamp), 'enter'], timestamp, state),
-  [incidentSetExit]: (state, {timestamp, shiftLength}) =>
-  R.compose(
-    R.assocPath([formatDate(timestamp), 'exit'], timestamp),
-    R.assocPath([formatDate(timestamp), 'shiftlength'], shiftLength)
-    )(state),
-}, {});
+fetch
+  request: { status: fetch, error: false }
+  failure: { status: ready, error: fetch }
+  success: { status: ready, error: false, ...data }
+save
+  request: { status: save, error: false }
+  failure: { status: ready, error: save }
+  success: { status: ready, error: false, ...data }
+update
+  request: { status: update, error: false }
+  failure: { status: ready, error: update }
+  success: { status: ready, error: false, ...data }
 */
+
 const incidents = combineReducers({ids, data});
 export default incidents;
 
