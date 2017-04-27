@@ -3,47 +3,37 @@ import { combineReducers } from 'redux';
 import R from "ramda";
 import { fetchIncidentSuccess, fetchIncidentFailure } from '../actions/';
 import { formatDate } from "../libs/timeFunctions";
+import { FETCH, SAVE, UPDATE , REQUEST, FAILURE, SUCCESS } from '../constants/'; 
 
-const ids = createReducer({
-  [fetchIncidentRequest]: (state, {date}) => R.uniq([...state, date]),
-  [fetchIncidentFailure]: (state, {date}) => R.reject(R.equals(date),state),
-  [saveIncidentRequest]: (state, {date}) => R.uniq([...state, date]),
-  [saveIncidentFailure]: (state, {date}) => state, // WHAT TO DO HERE???
-}, []);
-const data = createReducer({
-  [fetchIncidentRequest]: (state, {date}) => R.assocPath([date, 'fetching'], true, state),
-  [fetchIncidentFailure]: (state, {date}) => R.reject(R.equals(date),state),
-  [fetchIncidentSuccess]: (state, {date, enter, exit, shiftlength}) =>
-    R.compose(
-      R.assocPath([date, 'fetching'], false),
-      R.assocPath([date, 'enter'], new Date(`${date} ${enter}`).valueOf()),
-      R.assocPath([date, 'exit'], new Date(`${date} ${exit}`).valueOf()),  // CHECKME: null?
-      R.assocPath([date, 'shiftlength'], shiftlength),
-    )(state),
-  [saveIncidentRequest]: (state, {date}) => R.assocPath([date, 'saving'], true, state),
-  [saveIncidentFailure]: (state, {date}) => state, //WHAT TO DO HERE???
-  [saveIncidentSuccess]: (state, {date, enter, shiftlength}) =>
-    R.compose(
-      R.assocPath([date, 'saving'], false),
-      R.assocPath([date, 'enter'], new Date(`${date} ${enter}`).valueOf()),
-      R.assocPath([date, 'shiftlength'], shiftlength),
-    )(state),
-}, {});
-
-/*
-fetch
-  request: { status: fetch, error: false }
-  failure: { status: ready, error: fetch }
-  success: { status: ready, error: false, ...data }
-save
-  request: { status: save, error: false }
-  failure: { status: ready, error: save }
-  success: { status: ready, error: false, ...data }
-update
-  request: { status: update, error: false }
-  failure: { status: ready, error: update }
-  success: { status: ready, error: false, ...data }
-*/
+const data = (state = {}, action}) => {
+  switch (action.type) {
+    case 'INCIDENT_FETCH_REQUEST' || 'INCIDENT_SAVE_REQUEST' || 'INCIDENT_UPDATE_REQUEST':
+      return { ...state, request: true };
+    case 'INCIDENT_FETCH_SUCCESS' || 'INCIDENT_SAVE_SUCCESS' || 'INCIDENT_UPDATE_SUCCESS':
+      return R.compose(
+      R.assocPath([action.payload.date, 'request'], false),
+      R.assocPath([action.payload.date, 'enter'], new Date(`${action.payload.date} ${action.payload.enter}`).valueOf()),
+      R.assocPath([action.payload.date, 'exit'], new Date(`${action.payload.date} ${action.payload.exit}`).valueOf()),  // CHECKME: null?
+      R.assocPath([action.payload.date, 'shiftlength'], action.payload.shiftlength),
+    )(state);
+    case 'INCIDENT_FETCH_FAILURE' || 'INCIDENT_SAVE_FAILURE' || 'INCIDENT_UPDATE_FAILURE':
+      return R.dissoc(action.payload.date, state);
+    default:
+      return state;
+  };
+};
+const ids = (state = [], action}) => {
+  switch (action.type) {
+    case 'INCIDENT_FETCH_REQUEST' || 'INCIDENT_SAVE_REQUEST' || 'INCIDENT_UPDATE_REQUEST':
+      return R.uniq([...state, action.payload.date]);
+    case 'INCIDENT_FETCH_SUCCESS' || 'INCIDENT_SAVE_SUCCESS' || 'INCIDENT_UPDATE_SUCCESS':
+      return R.uniq([...state, action.payload.date]);
+    case 'INCIDENT_FETCH_FAILURE' || 'INCIDENT_SAVE_FAILURE' || 'INCIDENT_UPDATE_FAILURE':
+      return R.reject(R.equals(action.payload.date),state);
+    default:
+      return state;
+  };
+};
 
 const incidents = combineReducers({ids, data});
 export default incidents;

@@ -1,6 +1,6 @@
 import { createAction } from "redux-act";
 import { RemoteResource } from 'redux-remote-resource';
-import { API_SERVER } from '../constants/';
+import { API_SERVER, FETCH, SAVE, UPDATE , REQUEST, FAILURE, SUCCESS } from '../constants/'; 
 import { getUserToken } from '../reducers/';
 import { formatDate, formatTime } from "../libs/timeFunctions";
 
@@ -42,64 +42,85 @@ export const logIn = (login, password) => ({
   }
 });
 
-export const fetchIncidentRequest = createAction("FETCH_INCIDENT_REQUEST", date => ({date}));
-export const fetchIncidentSuccess = createAction("FETCH_INCIDENT_SUCCESS", data => ({...data}));
-export const fetchIncidentFailure = createAction("FETCH_INCIDENT_FAILURE", error => ({error}));
+const apiActionType = (model, mode, stage) => `${model}_${mode}_${stage}`;
+
+const createRequestAction = (model, mode) => date => ({
+      type: apiActionType(model, mode, REQUEST),
+      date
+    });
+const createSuccessAction = (model, mode) => payload => ({
+      type: apiActionType(model, mode, SUCCESS),
+      payload
+    });
+const createFailureAction = (model, mode) => (payload, error) => ({
+      type: apiActionType(model, mode, FAILURE),
+      payload,
+      error
+    });
+
+export const apiIncident = {
+  [FETCH]: {
+    [REQUEST]: createRequestAction('INCIDENT', FETCH),
+    [SUCCESS]: createSuccessAction('INCIDENT', FETCH),
+    [FAILURE]: createFailureAction('INCIDENT', FETCH)
+  },
+  [SAVE]: {
+    [REQUEST]: createRequestAction('INCIDENT', SAVE),
+    [SUCCESS]: createSuccessAction('INCIDENT', SAVE),
+    [FAILURE]: createFailureAction('INCIDENT', SAVE)
+  },
+  [UPDATE]: {
+    [REQUEST]: createRequestAction('INCIDENT', UPDATE),
+    [SUCCESS]: createSuccessAction('INCIDENT', UPDATE),
+    [FAILURE]: createFailureAction('INCIDENT', UPDATE)
+  }
+};
+
 export const fetchIncident = (date) => ({
   [RemoteResource]: {
     uri: `${API_SERVER}/incidents/${date}`,
     method: 'get',
-    headers: {
-      Accept: 'application/json',
-      Authorization: state => `Bearer ${getUserToken(state)}`,
-    },
     lifecycle: {
-      request: dispatch => dispatch(fetchIncidentRequest(formatDate(timestamp))),
-      failure: (error, dispatch, data, response) => dispatch(fetchIncidentFailure(error)),
-      success: (payload, dispatch, response) => {
-        dispatch(fetchIncidentSuccess(payload.data));
-      },
+      request: dispatch =>
+        dispatch(apiIncident[FETCH][REQUEST](date)),
+      success: (payload, dispatch, response) =>
+        dispatch(apiIncident[FETCH][SUCCESS](payload.data)),
+      failure: (error, dispatch, payload, response) =>
+        dispatch(apiIncident[FETCH][ERROR](payload.data, error)),
     }
   }
 });
-export const saveIncidentRequest = createAction("SAVE_INCIDENT_REQUEST", date => ({date}));
-export const saveIncidentSuccess = createAction("SAVE_INCIDENT_SUCCESS", data => ({...data}));
-export const saveIncidentFailure = createAction("SAVE_INCIDENT_FAILURE", error => ({error}));
 export const saveIncident = (timestamp, shiftlength) => ({
   [RemoteResource]: {
     uri: `${API_SERVER}/incidents/${formatDate(timestamp)}`,
     method: 'put',
-    headers: {
-      Accept: 'application/json',
-      Authorization: state => `Bearer ${getUserToken(state)}`,
-    },
     body: {enter: formatTime(timestamp), shiftlength},
     lifecycle: {
-      request: dispatch => dispatch(saveIncidentRequest(formatDate(timestamp))),
-      failure: (error, dispatch, data, response) => dispatch(saveIncidentFailure(error)),
-      success: (payload, dispatch, response) => dispatch(saveIncidentSuccess(payload.data)),
+      request: dispatch =>
+        dispatch(apiIncident[SAVE][REQUEST](formatDate(timestamp))),
+      success: (payload, dispatch, response) =>
+        dispatch(apiIncident[SAVE][SUCCESS](payload.data)),
+      failure: (error, dispatch, payload, response) =>
+        dispatch(apiIncident[SAVE][ERROR](payload.data, error)),
     }
   }
 });
-export const updateIncidentRequest = createAction("UPDATE_INCIDENT_REQUEST", date => ({date}));
-export const updateIncidentSuccess = createAction("UPDATE_INCIDENT_SUCCESS", data => ({...data}));
-export const updateIncidentFailure = createAction("UPDATE_INCIDENT_FAILURE", error => ({error}));
 export const updateIncident = (date, updateObject) => ({
   [RemoteResource]: {
     uri: `${API_SERVER}/incidents/${date}`,
     method: 'patch',
-    headers: {
-      Accept: 'application/json',
-      Authorization: state => `Bearer ${getUserToken(state)}`,
-    },
     body: updateObject,
     lifecycle: {
-      request: dispatch => dispatch(updateIncidentRequest(formatDate(timestamp))),
-      failure: (error, dispatch, data, response) => dispatch(updateIncidentFailure(error)),
-      success: (payload, dispatch, response) => dispatch(updateIncidentSuccess(payload.data)),
+      request: dispatch =>
+        dispatch(apiIncident[SAVE][REQUEST](formatDate(timestamp))),
+      success: (payload, dispatch, response) =>
+        dispatch(apiIncident[SAVE][SUCCESS](payload.data)),
+      failure: (error, dispatch, payload, response) =>
+        dispatch(apiIncident[SAVE][ERROR](payload.data, error)),
     }
   }
 });
+
 export const updateExit = timestamp =>
   updateIncident(formatTime(timestamp), {exit: formatTime(timestamp)});
 export const updateShiftlength = (timestamp, shiftlength) =>

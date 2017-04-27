@@ -3,13 +3,13 @@ import ReactDOM from 'react-dom';
 import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 //import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
+import thunk from 'redux-thunk';
 import reduxImmutableStateInvariant from 'redux-immutable-state-invariant';
 import remoteResourceMiddleware from 'redux-remote-resource';
-//import remoteResourceMiddleware from 'redux-remote-resource';
-import reducer from './reducers/';
 import clockTickMiddleware from './middlewares/clockTick';
 import bruteLoggerMiddleware from './middlewares/logger';
-import { clockTick } from './actions/';
+import reducer, { getUserToken } from './reducers/';
+import { clockTick, logOut } from './actions/';
 import Layout from './components/Layout';
 import './styles.css';
 import 'font-awesome/css/font-awesome.css';
@@ -23,7 +23,18 @@ const store = createStore(reducer, composeEnhancers(
   ));
 */
 // Or like this, to force REDUX_DEVTOOLS to the end - but probably for DEV only?
-const enhancer = applyMiddleware(remoteResourceMiddleware(), bruteLoggerMiddleware, reduxImmutableStateInvariant(), clockTickMiddleware);
+
+const RRM = remoteResourceMiddleware({
+  injectedHeaders: {
+      Accept: 'application/json',
+      Authorization: state => `Bearer ${getUserToken(state)}`,
+  },
+  statusActions: {
+    401: logOut
+  }
+});
+const enhancer = applyMiddleware(
+  RRM, thunk, bruteLoggerMiddleware, reduxImmutableStateInvariant(), clockTickMiddleware);
 const composeEnhancer = compose(enhancer, window.__REDUX_DEVTOOLS_EXTENSION__());
 const store = createStore(reducer, composeEnhancer);
 
