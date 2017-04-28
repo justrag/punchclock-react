@@ -82,12 +82,12 @@ export const fetchIncident = (date) => ({
     lifecycle: {
       request: dispatch =>
         dispatch(apiIncident[FETCH][REQUEST](date)),
-      success: (payload, dispatch, response) =>
-//        console.debug("SUCC payload: %o",payload),
-        dispatch(apiIncident[FETCH][SUCCESS](payload.data)),
-      failure: (error, dispatch, payload, response) =>
-//        console.debug("FAIL error: %o; payload: %o",error,payload),
-        dispatch(apiIncident[FETCH][FAILURE](payload, error)),
+      success: (payload, dispatch, response) => {
+        console.debug("SUCC payload: %o",payload),
+        dispatch(apiIncident[FETCH][SUCCESS](payload.data))},
+      failure: (error, dispatch, payload, response) => {
+        console.debug("FAIL error: %o; payload: %o",error,payload),
+        dispatch(apiIncident[FETCH][FAILURE](payload.error, error))},
     }
   }
 });
@@ -102,7 +102,7 @@ export const saveIncident = (timestamp, shiftlength) => ({
       success: (payload, dispatch, response) =>
         dispatch(apiIncident[SAVE][SUCCESS](payload.data)),
       failure: (error, dispatch, payload, response) =>
-        dispatch(apiIncident[SAVE][FAILURE](payload, error)),
+        dispatch(apiIncident[SAVE][FAILURE](payload.error, error)),
     }
   }
 });
@@ -117,7 +117,7 @@ export const updateIncident = (date, updateObject) => ({
       success: (payload, dispatch, response) =>
         dispatch(apiIncident[SAVE][SUCCESS](payload.data)),
       failure: (error, dispatch, payload, response) =>
-        dispatch(apiIncident[SAVE][FAILURE](payload, error)),
+        dispatch(apiIncident[SAVE][FAILURE](payload.error, error)),
     }
   }
 });
