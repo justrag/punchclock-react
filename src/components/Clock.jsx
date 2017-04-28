@@ -11,9 +11,11 @@ import { getTimeselectTimestamp } from '../reducers/';
 import { formatDate } from "../libs/timeFunctions";
 
 class Clock extends Component {
+/*
   constructor(props) {
     super(props);
   }
+*/
   componentDidMount() { this.props.fetchIncident(this.props.selectedDate); }
   componentDidUpdate(nextProps) {
     if (nextProps.selectedDate !== this.props.selectedDate) this.props.fetchIncident(nextProps.selectedDate);
@@ -39,4 +41,4 @@ class Clock extends Component {
 const mapStateToProps = state => ({
   selectedDate: formatDate(getTimeselectTimestamp(state)),
 });
-export default connect(mapStateToProps, { getIncident: getIncidentAction })(Clock);
+export default connect(mapStateToProps, { fetchIncident: fetchIncidentAction })(Clock);

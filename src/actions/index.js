@@ -1,7 +1,6 @@
 import { createAction } from "redux-act";
 import { RemoteResource } from 'redux-remote-resource';
 import { API_SERVER, FETCH, SAVE, UPDATE , REQUEST, FAILURE, SUCCESS } from '../constants/'; 
-import { getUserToken } from '../reducers/';
 import { formatDate, formatTime } from "../libs/timeFunctions";
 
 export const timeselectReset = createAction("TIMESELECT_RESET");
@@ -84,9 +83,11 @@ export const fetchIncident = (date) => ({
       request: dispatch =>
         dispatch(apiIncident[FETCH][REQUEST](date)),
       success: (payload, dispatch, response) =>
+//        console.debug("SUCC payload: %o",payload),
         dispatch(apiIncident[FETCH][SUCCESS](payload.data)),
       failure: (error, dispatch, payload, response) =>
-        dispatch(apiIncident[FETCH][ERROR](payload.data, error)),
+//        console.debug("FAIL error: %o; payload: %o",error,payload),
+        dispatch(apiIncident[FETCH][FAILURE](payload, error)),
     }
   }
 });
@@ -101,7 +102,7 @@ export const saveIncident = (timestamp, shiftlength) => ({
       success: (payload, dispatch, response) =>
         dispatch(apiIncident[SAVE][SUCCESS](payload.data)),
       failure: (error, dispatch, payload, response) =>
-        dispatch(apiIncident[SAVE][ERROR](payload.data, error)),
+        dispatch(apiIncident[SAVE][FAILURE](payload, error)),
     }
   }
 });
@@ -112,16 +113,16 @@ export const updateIncident = (date, updateObject) => ({
     body: updateObject,
     lifecycle: {
       request: dispatch =>
-        dispatch(apiIncident[SAVE][REQUEST](formatDate(timestamp))),
+        dispatch(apiIncident[SAVE][REQUEST](date)),
       success: (payload, dispatch, response) =>
         dispatch(apiIncident[SAVE][SUCCESS](payload.data)),
       failure: (error, dispatch, payload, response) =>
-        dispatch(apiIncident[SAVE][ERROR](payload.data, error)),
+        dispatch(apiIncident[SAVE][FAILURE](payload, error)),
     }
   }
 });
 
 export const updateExit = timestamp =>
-  updateIncident(formatTime(timestamp), {exit: formatTime(timestamp)});
+  updateIncident(formatDate(timestamp), {exit: formatTime(timestamp)});
 export const updateShiftlength = (timestamp, shiftlength) =>
-  updateIncident(formatTime(timestamp), {shiftlength: shiftlength});
+  updateIncident(formatDate(timestamp), {shiftlength: shiftlength});

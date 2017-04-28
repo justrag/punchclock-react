@@ -12,7 +12,8 @@ import {
   getExitOnSelectedDate,
   getWorktimeForSelectedDate,
   isOvertime,
-  getAbsTimeTillLeave
+  getAbsTimeTillLeave,
+  getTimeselectTimestamp
 } from "../reducers/";
 
 const ShiftLength = (
@@ -26,11 +27,12 @@ const ShiftLength = (
     timeLeft,
     shiftlengthIncrease,
     shiftlengthDecrease,
-    updateShiftlength
+    updateShiftlength,
+    selectTimestamp
   }
 ) => (
   <div className="vertical topalign">
-    <a onClick={shiftlengthDecrease} className="button">
+    <a onClick={() => shiftlengthDecrease()} className="button">
       <i className="fa fa-lg fa-minus" />
     </a>
 <a onClick={() => updateShiftlength(selectTimestamp, shiftLength)} className="button">
@@ -40,7 +42,7 @@ const ShiftLength = (
           <br />
           {shiftLength} godzin
         </a>
-    <a onClick={shiftlengthIncrease} className="button">
+    <a onClick={() => shiftlengthIncrease()} className="button">
       <i className="fa fa-lg fa-plus" />
     </a>
     {enterTime && exitTime && <p>Czas pracy: <span>{workTime}</span></p>}
@@ -55,7 +57,8 @@ const mapStateToProps = state => ({
   exitTime: getExitOnSelectedDate(state),
   workTime: getWorktimeForSelectedDate(state),
   overtime: isOvertime(state),
-  timeLeft: getAbsTimeTillLeave(state)
+  timeLeft: getAbsTimeTillLeave(state),
+  selectTimestamp: getTimeselectTimestamp(state)
 });
 export default connect(mapStateToProps, {
   shiftlengthIncrease: shiftlengthIncreaseAction,

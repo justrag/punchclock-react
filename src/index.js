@@ -26,8 +26,8 @@ const store = createStore(reducer, composeEnhancers(
 
 const RRM = remoteResourceMiddleware({
   injectedHeaders: {
-      Accept: 'application/json',
-      Authorization: state => `Bearer ${getUserToken(state)}`,
+    'Accept': 'application/json',
+    'Authorization': state => `Bearer ${getUserToken(state)}`,
   },
   statusActions: {
     401: logOut
@@ -57,6 +57,6 @@ const App = () => (
   </Provider>
 );
 
-setInterval(() => store.dispatch(clockTick()), 5000);
+setInterval(() => store.dispatch(clockTick()), 50000);
 
 ReactDOM.render(<App />, document.getElementById('root'));
