@@ -17,9 +17,13 @@ class Clock extends Component {
   }
 */
   componentDidMount() { this.props.fetchIncident(this.props.selectedDate); }
-  componentDidUpdate(nextProps) {
-    if (nextProps.selectedDate !== this.props.selectedDate) this.props.fetchIncident(nextProps.selectedDate);
+  
+  componentDidUpdate(prevProps) {
+    if (prevProps.selectedDate !== this.props.selectedDate) {
+      this.props.fetchIncident(this.props.selectedDate);
+    };
   }
+
   render() {
     return (
       <div>
