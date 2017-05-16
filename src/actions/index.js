@@ -1,6 +1,6 @@
 import { createAction } from "redux-act";
 import { RemoteResource } from 'redux-remote-resource';
-import { API_SERVER, FETCH, SAVE, UPDATE , REQUEST, FAILURE, SUCCESS } from '../constants/'; 
+import { API_SERVER, INCIDENT, FETCH, SAVE, UPDATE , REQUEST, FAILURE, SUCCESS } from '../constants/'; 
 import { formatDate, formatTime } from "../libs/timeFunctions";
 
 export const timeselectReset = createAction("TIMESELECT_RESET");
@@ -13,11 +13,6 @@ export const timeselectChangeYear = createAction("TIMESELECT_CHANGE_YEAR");
 export const timeselectChangeHour = createAction("TIMESELECT_CHANGE_HOUR");
 export const timeselectChangeMinute = createAction("TIMESELECT_CHANGE_MINUTE");
 export const timeselectSetTimestamp = createAction("TIMESELECT_SET_TIMESTAMP", (selected, newTimestamp) => ({selected, newTimestamp}));
-
-// should be async to API, just put it in store for now
-export const incidentSetEnter = createAction("INCIDENT_SET_ENTER", timestamp => ({timestamp}));
-export const incidentSetExit = createAction("INCIDENT_SET_EXIT",
-  (timestamp, shiftLength) => ({timestamp, shiftLength}));
 
 export const clockTick = createAction("CLOCK_TICK", null, () => ({tick: true})); // to be intercepted by clockTick middleware
 
@@ -45,35 +40,26 @@ const apiActionType = (model, mode, stage) => `${model}_${mode}_${stage}`;
 
 const createRequestAction = (model, mode) => date => ({
       type: apiActionType(model, mode, REQUEST),
-      date
+      api: {
+        date,
+        request: mode,
+        model: model
+      }
     });
-const createSuccessAction = (model, mode) => payload => ({
+const createSuccessAction = (model, mode) => data => ({
       type: apiActionType(model, mode, SUCCESS),
-      payload
+      api: {
+        data,
+        model: model
+      }
     });
-const createFailureAction = (model, mode) => (payload, error) => ({
+const createFailureAction = (model, mode) => error => ({
       type: apiActionType(model, mode, FAILURE),
-      payload,
-      error
+      api: {
+        error,
+        model: model,
+      }
     });
-
-export const apiIncident = {
-  [FETCH]: {
-    [REQUEST]: createRequestAction('INCIDENT', FETCH),
-    [SUCCESS]: createSuccessAction('INCIDENT', FETCH),
-    [FAILURE]: createFailureAction('INCIDENT', FETCH)
-  },
-  [SAVE]: {
-    [REQUEST]: createRequestAction('INCIDENT', SAVE),
-    [SUCCESS]: createSuccessAction('INCIDENT', SAVE),
-    [FAILURE]: createFailureAction('INCIDENT', SAVE)
-  },
-  [UPDATE]: {
-    [REQUEST]: createRequestAction('INCIDENT', UPDATE),
-    [SUCCESS]: createSuccessAction('INCIDENT', UPDATE),
-    [FAILURE]: createFailureAction('INCIDENT', UPDATE)
-  }
-};
 
 export const fetchIncident = (date) => ({
   [RemoteResource]: {
@@ -81,13 +67,15 @@ export const fetchIncident = (date) => ({
     method: 'get',
     lifecycle: {
       request: dispatch =>
-        dispatch(apiIncident[FETCH][REQUEST](date)),
+        dispatch(createRequestAction(INCIDENT,FETCH)(date)),
       success: (payload, dispatch, response) => {
-        console.debug("SUCC payload: %o",payload),
-        dispatch(apiIncident[FETCH][SUCCESS](payload.data))},
+        // FIXME: some massaging of the data is required
+        // (some normalization, but mostly time/date stuff)
+        console.debug("SUCC payload: %o",payload);
+        dispatch(createSuccessAction(INCIDENT,FETCH)(payload.data))},
       failure: (error, dispatch, payload, response) => {
-        console.debug("FAIL error: %o; payload: %o",error,payload),
-        dispatch(apiIncident[FETCH][FAILURE](payload.error, error))},
+        console.debug("FAIL error: %o; payload: %o",error,payload);
+        dispatch(createFailureAction(INCIDENT,FETCH)(error))},
     }
   }
 });
@@ -98,11 +86,11 @@ export const saveIncident = (timestamp, shiftlength) => ({
     body: {enter: formatTime(timestamp), shiftlength},
     lifecycle: {
       request: dispatch =>
-        dispatch(apiIncident[SAVE][REQUEST](formatDate(timestamp))),
+        dispatch(createRequestAction(INCIDENT,SAVE)(formatDate(timestamp))),
       success: (payload, dispatch, response) =>
-        dispatch(apiIncident[SAVE][SUCCESS](payload.data)),
+        dispatch(createSuccessAction(INCIDENT,SAVE)(payload.data)),
       failure: (error, dispatch, payload, response) =>
-        dispatch(apiIncident[SAVE][FAILURE](payload.error, error)),
+        dispatch(createFailureAction(INCIDENT,SAVE)(error)),
     }
   }
 });
@@ -113,14 +101,25 @@ export const updateIncident = (date, updateObject) => ({
     body: updateObject,
     lifecycle: {
       request: dispatch =>
-        dispatch(apiIncident[SAVE][REQUEST](date)),
+        dispatch(createRequestAction(INCIDENT,UPDATE)(date)),
       success: (payload, dispatch, response) =>
-        dispatch(apiIncident[SAVE][SUCCESS](payload.data)),
+        dispatch(createSuccessAction(INCIDENT,UPDATE)(payload.data)),
       failure: (error, dispatch, payload, response) =>
-        dispatch(apiIncident[SAVE][FAILURE](payload.error, error)),
+        dispatch(createFailureAction(INCIDENT,UPDATE)(error)),
     }
   }
 });
+
+/*
+  if (action.payload &&
+    [INCIDENT_FETCH_SUCCESS,INCIDENT_SAVE_SUCCESS,INCIDENT_UPDATE_SUCCESS].includes(action.type)) {
+      return R.compose(
+      R.assocPath([action.payload.date, 'enter'], new Date(`${action.payload.date} ${action.payload.enter}`).valueOf()),
+      R.assocPath([action.payload.date, 'exit'], new Date(`${action.payload.date} ${action.payload.exit}`).valueOf()),  // CHECKME: null?
+      R.assocPath([action.payload.date, 'shiftlength'], action.payload.shiftlength),
+    )(state);
+  };
+*/
 
 export const updateExit = timestamp =>
   updateIncident(formatDate(timestamp), {exit: formatTime(timestamp)});
