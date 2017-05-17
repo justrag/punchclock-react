@@ -1,12 +1,17 @@
 import React from "react";
 import { connect } from "react-redux";
+import classNames from 'classnames';
 import { updateExit as updateExitAction } from "../actions/";
 import {
   getTimeselectTimestring,
   getExitOnSelectedDate,
   getTimeselectTimestamp,
-  getEnterOnSelectedDate
+  getEnterOnSelectedDate,
+  getApiStatus
  } from '../reducers/';
+
+const Icon = ({enter, status}) => 
+  <i className={classNames('fa','fa-lg',(status?"fa-spin fa-refresh":(enter?"fa-pencil":"fa-sign-out")))} />
 
 const ExitTime = (
   {
@@ -15,29 +20,27 @@ const ExitTime = (
   exitTime,
   selectTimestamp,
   updateExit,
+  apiStatus
   }
 ) => (
   <div className="vertical">
     <p>
-      Wyjście:
+      Wyjście:&nbsp;
       {exitTime
         ? <span>{exitTime}</span>
         : <span>&nbsp;&nbsp;:&nbsp;&nbsp;</span>}
     </p>
-    {exitTime
-      ? <a onClick={() => updateExit(selectTimestamp)} className="button">
-          <i className="fa fa-lg fa-pencil" />
-          <br />
-          Jednak wyszedłem o:
-          <br />
-          {timeString}
-        </a>
-      : <a onClick={() => updateExit(selectTimestamp)} className="button" disabled={!enterTime}>
-          <i className="fa fa-lg fa-sign-out" /><br />Wychodzę o:<br />{timeString}
-        </a>}
+    <a onClick={() => updateExit(selectTimestamp)} className="button">
+      <Icon enter={enterTime} status={apiStatus} />
+      <br />
+      {enterTime?"Jednak wyszedłem o:":"Wychodzę o:"}
+      <br />
+      {timeString}
+    </a>
   </div>
 );
 const mapStateToProps = state => ({
+  apiStatus: getApiStatus(state),
   timeString: getTimeselectTimestring(state),
   enterTime: getEnterOnSelectedDate(state),
   exitTime: getExitOnSelectedDate(state),

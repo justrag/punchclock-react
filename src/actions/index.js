@@ -1,6 +1,6 @@
 import { createAction } from "redux-act";
 import { RemoteResource } from 'redux-remote-resource';
-import { API_SERVER, INCIDENT, FETCH, SAVE, UPDATE , REQUEST, FAILURE, SUCCESS } from '../constants/'; 
+import { API_SERVER, INCIDENT, FETCH, SAVE, UPDATE , REQUEST, FAILURE, SUCCESS, INC } from '../constants/'; 
 import { formatDate, formatTime } from "../libs/timeFunctions";
 
 export const timeselectReset = createAction("TIMESELECT_RESET");
@@ -68,14 +68,10 @@ export const fetchIncident = (date) => ({
     lifecycle: {
       request: dispatch =>
         dispatch(createRequestAction(INCIDENT,FETCH)(date)),
-      success: (payload, dispatch, response) => {
-        // FIXME: some massaging of the data is required
-        // (some normalization, but mostly time/date stuff)
-        console.debug("SUCC payload: %o",payload);
-        dispatch(createSuccessAction(INCIDENT,FETCH)(payload.data))},
-      failure: (error, dispatch, payload, response) => {
-        console.debug("FAIL error: %o; payload: %o",error,payload);
-        dispatch(createFailureAction(INCIDENT,FETCH)(error))},
+      success: (payload, dispatch, response) => 
+        dispatch(createSuccessAction(INCIDENT,FETCH)(payload.data)),
+      failure: (error, dispatch, payload, response) => 
+        dispatch(createFailureAction(INCIDENT,FETCH)(error)),
     }
   }
 });
@@ -125,3 +121,11 @@ export const updateExit = timestamp =>
   updateIncident(formatDate(timestamp), {exit: formatTime(timestamp)});
 export const updateShiftlength = (timestamp, shiftlength) =>
   updateIncident(formatDate(timestamp), {shiftlength: shiftlength});
+
+export const createStatsAction = (period, direction) => () => ({
+  type: `STATS_${period}_${direction}`,
+  stats: {
+    period,
+    delta: (direction === INC) ? 1 : -1
+  }
+});

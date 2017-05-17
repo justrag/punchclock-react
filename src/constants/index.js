@@ -10,3 +10,10 @@ export const UPDATE = 'UPDATE';
 export const REQUEST = 'REQUEST';
 export const FAILURE = 'FAILURE';
 export const SUCCESS = 'SUCCESS';
+
+export const WEEK = 'WEEK';
+export const MONTH = 'MONTH';
+export const YEAR = 'YEAR';
+
+export const INC = 'INC';
+export const DEC = 'DEC';

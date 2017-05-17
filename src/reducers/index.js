@@ -4,7 +4,10 @@ import addHours from 'date-fns/add_hours';
 import user, * as fromUser from './user';
 import timeselect, * as fromTimeselect from './timeselect';
 import incidents, * as fromIncidents from './incidents';
-import { formatDate, formatTime, formatDifferenceInTimestamps, absDifferenceInTimestamps } from '../libs/timeFunctions';
+import stats, * as fromStats from './stats';
+import { formatDate, formatDifferenceInTimestamps, absDifferenceInTimestamps } from '../libs/timeFunctions';
+
+export const getApiStatus = state => fromIncidents.getStatus(state.incidents);
 
 export const getUserLogin = state => fromUser.getUserLogin(state.user);
 export const getUserToken = state => fromUser.getUserToken(state.user);
@@ -48,36 +51,27 @@ const reducer = combineReducers({
 
 export default reducer;
 
-export const getEnterTimestampOnSelectedDate = state => fromIncidents.getEnterOnDate(state.incidents, formatDate(getTimeselectTimestamp(state)));
+const getSelectedDate = state => formatDate(getTimeselectTimestamp(state));
 
-export const getEnterOnSelectedDate = state => {
-  const enter = getEnterTimestampOnSelectedDate(state);
-  return (enter ? formatTime(enter) : false);
-}
-
-export const getExitTimestampOnSelectedDate = state => fromIncidents.getExitOnDate(state.incidents, formatDate(getTimeselectTimestamp(state)));
-
-export const getExitOnSelectedDate = state => {
-  const exit = getExitTimestampOnSelectedDate(state);
-  return (exit ? formatTime(exit) : false);
-}
-
+export const getEnterOnSelectedDate = state => fromIncidents.getEnterOnDate(state.incidents, getSelectedDate(state));
+export const getExitOnSelectedDate = state => fromIncidents.getExitOnDate(state.incidents, getSelectedDate(state));
 export const getShiftLengthOnSelectedDate = state =>
   fromIncidents.getShiftlengthOnDate(
     state.incidents,
     formatDate(getTimeselectTimestamp(state))
     );
 
-export const getWorktimeForSelectedDate = (state) => 
- formatDifferenceInTimestamps(
-  addHours(
-    getEnterTimestampOnSelectedDate(state),
-    getShiftLengthOnSelectedDate(state)
-    ).valueOf(),
-  getExitTimestampOnSelectedDate(state));
+export const getWorktimeForSelectedDate = (state) => {
+  const enter=new Date(`${getSelectedDate(state)} ${getEnterOnSelectedDate(state)}`);
+  const exit=new Date(`${getSelectedDate(state)} ${getExitOnSelectedDate(state)}`);
+  const shift=getShiftLengthOnSelectedDate(state);
+  const shouldExit=addHours(enter,shift).valueOf();
+  const diff=formatDifferenceInTimestamps(shouldExit,exit);
+  return diff;
+};
 
 export const getAbsTimeTillLeave = (state) => {
-  const enter = getEnterTimestampOnSelectedDate(state);
+  const enter = getEnterOnSelectedDate(state);
   const exit = getTimeselectCurrentTimestamp(state);
   const shiftlength = getTimeselectShiftlength(state);
   const dueDate = addHours(enter,shiftlength);
@@ -85,7 +79,7 @@ export const getAbsTimeTillLeave = (state) => {
 };
 export const isOvertime = (state) => (
     addHours(
-    getEnterTimestampOnSelectedDate(state),
+    getEnterOnSelectedDate(state),
     getTimeselectShiftlength(state)
     ).valueOf() < getTimeselectCurrentTimestamp(state)
 );

@@ -1,12 +1,17 @@
 import React from "react";
 import { connect } from "react-redux";
+import classNames from 'classnames';
 import { saveIncident as saveIncidentAction } from "../actions/";
 import {
   getTimeselectTimestring,
   getEnterOnSelectedDate,
   getTimeselectTimestamp,
-  getTimeselectShiftlength
+  getTimeselectShiftlength,
+  getApiStatus
 } from "../reducers/";
+
+const Icon = ({enter, status}) => 
+  <i className={classNames('fa','fa-lg',(status?"fa-spin fa-refresh":(enter?"fa-pencil":"fa-sign-in")))} />
 
 const EnterTime = (
   {
@@ -14,34 +19,28 @@ const EnterTime = (
     selectTimestamp,
     selectShiftlength,
     timeString,
-    saveIncident
+    saveIncident,
+    apiStatus
   }
 ) => (
   <div className="vertical">
     <p>
-      Wejście:
+      Wejście:&nbsp;
       <span>
         {enterTime ? enterTime : <span>&nbsp;&nbsp;:&nbsp;&nbsp;</span>}
       </span>
     </p>
-    {enterTime
-      ? <a onClick={() => saveIncident(selectTimestamp, selectShiftlength)} className="button">
-          <i className="fa fa-lg fa-pencil" />
-          <br />
-          Jednak wszedłem o:
-          <br />
-          {timeString}
-        </a>
-      : <a onClick={() => saveIncident(selectTimestamp, selectShiftlength)} className="button">
-          <i className="fa fa-lg fa-sign-in" />
-          <br />
-          Wchodzę o:
-          <br />
-          {timeString}
-        </a>}
+    <a onClick={() => saveIncident(selectTimestamp, selectShiftlength)} className="button">
+      <Icon enter={enterTime} status={apiStatus} />
+      <br />
+      {enterTime?"Jednak wszedłem o:":"Wchodzę o:"}
+      <br />
+      {timeString}
+    </a>
   </div>
 );
 const mapStateToProps = state => ({
+  apiStatus: getApiStatus(state),
   enterTime: getEnterOnSelectedDate(state),
   selectTimestamp: getTimeselectTimestamp(state),
   selectShiftlength: getTimeselectShiftlength(state),

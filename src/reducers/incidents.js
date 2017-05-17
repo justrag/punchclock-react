@@ -27,7 +27,7 @@ const error = (state = false, action) => {
 
 const data = (state = {}, action) => {
   if (action.api && action.api.data && action.api.data[0]) {
-    return ({...state, [action.api.data[0].date]: action.api.data[0]});
+    return ({...state, [action.api.data[0].date]: {...state[action.api.data[0].date], ...action.api.data[0]}});
   } else {
     return state;
   }
@@ -42,6 +42,8 @@ const ids = (state = [], action) => {
 
 const incidents = combineReducers({request, error, ids, data});
 export default incidents;
+
+export const getStatus = state => state.request;
 
 export const getEnterOnDate = (state, numericalDate) =>
   R.path(['data', numericalDate, 'enter'], state);

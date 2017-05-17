@@ -4,11 +4,9 @@ import { BrowserRouter as Router, Route, Switch, Redirect, NavLink } from "react
 import { getUserLogin, getUserToken } from "../reducers/";
 import { logOut as logOutAction } from "../actions/";
 import Clock from "./Clock";
-/* import Stats from "./Stats"; */
+import Stats from "./Stats";
 import Settings from "./Settings";
 import Login from "./Login";
-
-const Stats = () => <h1>Stats</h1>;
 
 const Layout = ({ logOut, token, userName }) => (
   <Router>

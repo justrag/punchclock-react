@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import classNames from 'classnames';
 import {
   timeselectShiftlengthIncrease as shiftlengthIncreaseAction,
   timeselectShiftlengthDecrease as shiftlengthDecreaseAction,
@@ -13,8 +14,12 @@ import {
   getWorktimeForSelectedDate,
   isOvertime,
   getAbsTimeTillLeave,
-  getTimeselectTimestamp
+  getTimeselectTimestamp,
+  getApiStatus
 } from "../reducers/";
+
+const Icon = ({status}) => 
+  <i className={classNames('fa','fa-lg',(status?"fa-spin fa-refresh":"fa-pencil"))} />
 
 const ShiftLength = (
   {
@@ -28,7 +33,8 @@ const ShiftLength = (
     shiftlengthIncrease,
     shiftlengthDecrease,
     updateShiftlength,
-    selectTimestamp
+    selectTimestamp,
+    apiStatus
   }
 ) => (
   <div className="vertical topalign">
@@ -36,7 +42,7 @@ const ShiftLength = (
       <i className="fa fa-lg fa-minus" />
     </a>
 <a onClick={() => updateShiftlength(selectTimestamp, shiftLength)} className="button">
-          <i className="fa fa-lg fa-pencil" />
+          <Icon status={apiStatus} />
           <br />
           Dzisiaj pracuję:
           <br />
@@ -51,6 +57,7 @@ const ShiftLength = (
   </div>
 );
 const mapStateToProps = state => ({
+  apiStatus: getApiStatus(state),
   shiftLength: getTimeselectShiftlength(state),
   isItToday: isTimeselectToday(state),
   enterTime: getEnterOnSelectedDate(state),
