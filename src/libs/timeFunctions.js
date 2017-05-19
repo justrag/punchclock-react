@@ -1,10 +1,14 @@
 import format from "date-fns/format";
 import startOfWeek from "date-fns/start_of_week";
+import endOfWeek from "date-fns/end_of_week";
 import getYear from "date-fns/get_year";
 import getMonth from "date-fns/get_month";
 import differenceInHours from 'date-fns/difference_in_hours';
 import differenceInMinutes from 'date-fns/difference_in_minutes';
 import differenceInSeconds from 'date-fns/difference_in_seconds';
+import addWeeks from "date-fns/add_weeks";
+import addMonths from "date-fns/add_months";
+import addYears from "date-fns/add_years";
 
 export const zeroPad = val => ( (val<10) ? `0${val}` : `${val}` );
 
@@ -44,3 +48,12 @@ export const formatDifferenceInTimestamps = (ts1, ts2, printSeconds = false) => 
   }
   return `${sign}${hrs}:${mins}`;
 };
+
+export const weeksAgo = delta => {
+  const day = addWeeks(new Date(), delta);
+  const weekBegin = startOfWeek(day, {weekStartsOn: 1});
+  const weekEnd = endOfWeek(day, {weekStartsOn: 1});
+  return `${formatDate(weekBegin)} - ${formatDate(weekEnd)}`;
+}
+export const monthsAgo = delta => format(addMonths(new Date(), delta),"MMMM YYYY");
+export const yearsAgo = delta => format(addYears(new Date(), delta),"YYYY");

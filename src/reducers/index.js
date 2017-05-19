@@ -46,6 +46,7 @@ const reducer = combineReducers({
   user,
   timeselect,
   incidents,
+  stats,
 //  routing: routerReducer,
 });
 
@@ -83,3 +84,5 @@ export const isOvertime = (state) => (
     getTimeselectShiftlength(state)
     ).valueOf() < getTimeselectCurrentTimestamp(state)
 );
+export const getStatsBegin = (state, period) => fromStats.getBegin(state.stats, period);
+export const getStatsEnd = (state, period) => fromStats.getEnd(state.stats, period);

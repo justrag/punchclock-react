@@ -1,6 +1,7 @@
 import { createAction } from "redux-act";
 import { RemoteResource } from 'redux-remote-resource';
 import { API_SERVER, INCIDENT, FETCH, SAVE, UPDATE , REQUEST, FAILURE, SUCCESS, INC } from '../constants/'; 
+import { getStatsBegin, getStatsEnd } from '../reducers/';
 import { formatDate, formatTime } from "../libs/timeFunctions";
 
 export const timeselectReset = createAction("TIMESELECT_RESET");
@@ -106,17 +107,6 @@ export const updateIncident = (date, updateObject) => ({
   }
 });
 
-/*
-  if (action.payload &&
-    [INCIDENT_FETCH_SUCCESS,INCIDENT_SAVE_SUCCESS,INCIDENT_UPDATE_SUCCESS].includes(action.type)) {
-      return R.compose(
-      R.assocPath([action.payload.date, 'enter'], new Date(`${action.payload.date} ${action.payload.enter}`).valueOf()),
-      R.assocPath([action.payload.date, 'exit'], new Date(`${action.payload.date} ${action.payload.exit}`).valueOf()),  // CHECKME: null?
-      R.assocPath([action.payload.date, 'shiftlength'], action.payload.shiftlength),
-    )(state);
-  };
-*/
-
 export const updateExit = timestamp =>
   updateIncident(formatDate(timestamp), {exit: formatTime(timestamp)});
 export const updateShiftlength = (timestamp, shiftlength) =>
@@ -127,5 +117,22 @@ export const createStatsAction = (period, direction) => () => ({
   stats: {
     period,
     delta: (direction === INC) ? 1 : -1
+  }
+});
+
+export const statsReset = createAction("STATS_RESET");
+
+export const statsFetch = period => ({
+  [RemoteResource]: {
+    uri: state => `${API_SERVER}/stats/${getStatsBegin(state,period)}/${getStatsEnd(state,period)}`,
+    method: 'get',
+    lifecycle: {
+      request: dispatch =>
+        dispatch(createRequestAction(INCIDENT,FETCH)(period)),
+      success: (payload, dispatch, response) => 
+        dispatch(createSuccessAction(INCIDENT,FETCH)(payload.data)),
+      failure: (error, dispatch, payload, response) => 
+        dispatch(createFailureAction(INCIDENT,FETCH)(error)),
+    }
   }
 });
