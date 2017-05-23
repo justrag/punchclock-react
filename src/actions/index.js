@@ -1,8 +1,7 @@
 import { createAction } from "redux-act";
 import { RemoteResource } from 'redux-remote-resource';
-import { API_SERVER, INCIDENT, FETCH, SAVE, UPDATE , REQUEST, FAILURE, SUCCESS, INC } from '../constants/'; 
-import { getStatsBegin, getStatsEnd } from '../reducers/';
-import { formatDate, formatTime } from "../libs/timeFunctions";
+import { API_SERVER, INCIDENT, FETCH, SAVE, UPDATE , REQUEST, FAILURE, SUCCESS, INC, STATS_RESET } from '../constants/'; 
+import { formatDate, formatTime, getPeriodBegin, getPeriodEnd } from "../libs/timeFunctions";
 
 export const timeselectReset = createAction("TIMESELECT_RESET");
 export const timeselectShiftlengthIncrease = createAction("TIMESELECT_SHIFTLENGTH_INCREASE");
@@ -112,27 +111,51 @@ export const updateExit = timestamp =>
 export const updateShiftlength = (timestamp, shiftlength) =>
   updateIncident(formatDate(timestamp), {shiftlength: shiftlength});
 
-export const createStatsAction = (period, direction) => () => ({
-  type: `STATS_${period}_${direction}`,
+export const statsReset = createAction(STATS_RESET);
+
+export const statsRequest = period => ({
+  type: "STATS_REQUEST",
   stats: {
     period,
-    delta: (direction === INC) ? 1 : -1
+    request: true,
+  }
+});
+export const statsSuccess = (period, data) => ({
+  type: "STATS_SUCCESS",
+  stats: {
+    period,
+    data
+  }
+});
+export const statsFailure = (period, error) => ({
+  type: "STATS_FAILURE",
+  stats: {
+    period,
+    error
   }
 });
 
-export const statsReset = createAction("STATS_RESET");
-
-export const statsFetch = period => ({
+export const statsFetch = (period, slide) => ({
   [RemoteResource]: {
-    uri: state => `${API_SERVER}/stats/${getStatsBegin(state,period)}/${getStatsEnd(state,period)}`,
+    uri: `${API_SERVER}/incidents/stats/${getPeriodBegin(period,slide)}/${getPeriodEnd(period,slide)}`,
     method: 'get',
     lifecycle: {
       request: dispatch =>
-        dispatch(createRequestAction(INCIDENT,FETCH)(period)),
+        dispatch(statsRequest(period)),
       success: (payload, dispatch, response) => 
-        dispatch(createSuccessAction(INCIDENT,FETCH)(payload.data)),
+        dispatch(statsSuccess(period, payload.data)),
       failure: (error, dispatch, payload, response) => 
-        dispatch(createFailureAction(INCIDENT,FETCH)(error)),
+        dispatch(statsFailure(period,error)),
     }
   }
 });
+
+export const createStatsAction = (period, direction) => () => (
+{
+  type: `STATS_${period}_${direction}`,
+  stats: {
+    period,
+    delta: ((direction === INC) ? 1 : -1)
+  }
+}
+);

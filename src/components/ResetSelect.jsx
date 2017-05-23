@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { timeselectReset as timeselectResetAction } from "../actions/";
-import { getTimeselectSelected, getTimeselectDisplay } from "../reducers/";
+import { getTimeselectSelected, getTimeselectDisplay } from "../selectors/";
 
 const ResetSelect = (
   {

@@ -4,13 +4,15 @@ import classNames from 'classnames';
 import {lifecycle} from 'recompose';
 import {WEEK, MONTH, YEAR, INC, DEC} from '../constants/';
 import {createStatsAction, statsReset, statsFetch as statsFetchAction} from '../actions/';
-import {weeksAgo, monthsAgo, yearsAgo} from '../libs/timeFunctions';
+import {getStatsOverTime, getStatsSlide, getStatsDays, getStatsShouldWork, getStatsDidWork, getStatsText} from '../selectors/';
 
 const Stats = ({
-  stats,
-  yearText,
-  monthText,
-  weekText,
+  slide,
+  days,
+  shouldWork,
+  didWork,
+  text,
+  overTime,
   statsWeekDec,
   statsWeekInc,
   statsMonthDec,
@@ -24,12 +26,12 @@ const Stats = ({
       <a onClick={statsWeekDec} className="button">
         <i className="fa fa-lg fa-chevron-left"></i>
       </a> 
-      <p>Tydzień<br />{weekText}</p>
+      <p>Tydzień<br />{text.week}</p>
       <div className="statsblock">
-        <p><span>{stats.week.days}</span> dni</p>
-        <p><span>{stats.week.shift}</span> godzin</p>
-        <p><span>{stats.week.diff}</span>
-          <i className={classNames("fa",(stats.week.diff>stats.week.shift)?"fa-thumbs-up":"fa-thumbs-down")}></i>
+        <p><span>{days.week}</span> dni</p>
+        <p><span>{shouldWork.week}</span> godzin</p>
+        <p><span>{didWork.week}</span>
+          <i className={classNames("fa",(overTime.week?"fa-thumbs-up":"fa-thumbs-down"))}></i>
         </p>
       </div>
       <a onClick={statsWeekInc} className="button">
@@ -40,12 +42,12 @@ const Stats = ({
       <a onClick={statsMonthDec} className="button">
         <i className="fa fa-lg fa-chevron-left"></i>
       </a> 
-      <p>Miesiąc<br />{monthText}</p>
+      <p>Miesiąc<br />{text.month}</p>
       <div className="statsblock">
-        <p><span>{stats.month.days}</span> dni</p>
-        <p><span>{stats.month.shift}</span> godzin</p>
-        <p><span>{stats.month.diff}</span>
-          <i className={classNames("fa",(stats.month.diff>stats.month.shift)?"fa-thumbs-up":"fa-thumbs-down")}></i>
+        <p><span>{days.month}</span> dni</p>
+        <p><span>{shouldWork.month}</span> godzin</p>
+        <p><span>{didWork.month}</span>
+          <i className={classNames("fa",(overTime.month?"fa-thumbs-up":"fa-thumbs-down"))}></i>
         </p>
       </div>
       <a onClick={statsMonthInc} className="button">
@@ -56,12 +58,12 @@ const Stats = ({
       <a onClick={statsYearDec} className="button">
         <i className="fa fa-lg fa-chevron-left"></i>
       </a> 
-      <p>Rok<br />{yearText}</p>
+      <p>Rok<br />{text.year}</p>
       <div className="statsblock">
-        <p><span>{stats.year.days}</span> dni</p>
-        <p><span>{stats.year.shift}</span> godzin</p>
-        <p><span>{stats.year.diff}</span>
-          <i className={classNames("fa",(stats.year.diff>stats.year.shift)?"fa-thumbs-up":"fa-thumbs-down")}></i>
+        <p><span>{days.year}</span> dni</p>
+        <p><span>{shouldWork.year}</span> godzin</p>
+        <p><span>{didWork.year}</span>
+          <i className={classNames("fa",(overTime.year?"fa-thumbs-up":"fa-thumbs-down"))}></i>
         </p>
       </div>
       <a onClick={statsYearInc} className="button">
@@ -74,28 +76,30 @@ const Stats = ({
 
 const LifecycledStats = lifecycle({
   componentDidMount() {
-    this.props.statsFetch(WEEK);
-    this.props.statsFetch(MONTH);
-    this.props.statsFetch(YEAR);
+    this.props.statsFetch(WEEK, this.props.slide.week);
+    this.props.statsFetch(MONTH, this.props.slide.month);
+    this.props.statsFetch(YEAR, this.props.slide.year);
   },
   componentDidUpdate(prevProps) {
-    if (prevProps.stats.week.slide !== this.props.stats.week.slide) {
-      this.props.statsFetch(WEEK);
+    if (prevProps.slide.week !== this.props.slide.week) {
+      this.props.statsFetch(WEEK, this.props.slide.week);
     };
-    if (prevProps.stats.month.slide !== this.props.stats.month.slide) {
-      this.props.statsFetch(MONTH);
+    if (prevProps.slide.month !== this.props.slide.month) {
+      this.props.statsFetch(MONTH, this.props.slide.month);
     };
-    if (prevProps.stats.year.slide !== this.props.stats.year.slide) {
-      this.props.statsFetch(YEAR);
+    if (prevProps.slide.year !== this.props.slide.year) {
+      this.props.statsFetch(YEAR, this.props.slide.year);
     };
   }
 })(Stats);
 
 const mapStateToProps = state => ({
-  stats: state.stats,
-  weekText: weeksAgo(state.stats.week.slide),
-  monthText: monthsAgo(state.stats.month.slide),
-  yearText: yearsAgo(state.stats.year.slide),
+  slide: getStatsSlide(state),
+  days: getStatsDays(state),
+  shouldWork: getStatsShouldWork(state),
+  didWork: getStatsDidWork(state),
+  text: getStatsText(state),
+  overTime: getStatsOverTime(state)
 });
 
 const mapDispatchToProps = ({

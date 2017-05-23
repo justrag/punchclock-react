@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 //import { Form, FormGroup, FormControl, Button, Alert } from 'react-bootstrap';
 //import ReactSpinner from 'react-spinjs';
 import { logIn as logInAction } from "../actions/";
-import { isUserLoading, getLoginError } from '../reducers/';
+import { isUserLoading, getLoginError } from '../selectors/';
 
 class Login extends Component {
   constructor(props) {
@@ -44,10 +44,13 @@ return (
 Login.propTypes = {
   loginAction: PropTypes.func.isRequired,
   isLoading: PropTypes.bool,
+  loginError: PropTypes.bool
+  /*
   loginError: PropTypes.shape({
     message: PropTypes.string,
     name: PropTypes.string,
   }),
+  */
 };
 const mapStateToProps = state => ({
   isLoading: isUserLoading(state),

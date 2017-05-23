@@ -18,7 +18,7 @@ getTimeselectPrevYear,
 getTimeselectNextDate,
 getTimeselectNextMonth,
 getTimeselectNextYear,
-} from '../reducers/';
+} from '../selectors/';
 
 const DateSelect = (
   {

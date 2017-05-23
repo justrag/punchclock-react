@@ -1,5 +1,5 @@
 import { timeselectSetTimestamp } from '../actions/';
-import { getTimeselectSelected } from '../reducers/'
+import { getTimeselectSelected } from '../selectors/'
 // clockTick middleware
 // dispatches timeselectSetTimestamp action with a current selected & timestamp
 // when receiving action with meta.tick set to true

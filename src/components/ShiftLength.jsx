@@ -16,7 +16,7 @@ import {
   getAbsTimeTillLeave,
   getTimeselectTimestamp,
   getApiStatus
-} from "../reducers/";
+} from "../selectors/";
 
 const Icon = ({status}) => 
   <i className={classNames('fa','fa-lg',(status?"fa-spin fa-refresh":"fa-pencil"))} />

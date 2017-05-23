@@ -1,6 +1,4 @@
 import format from "date-fns/format";
-import startOfWeek from "date-fns/start_of_week";
-import endOfWeek from "date-fns/end_of_week";
 import getYear from "date-fns/get_year";
 import getMonth from "date-fns/get_month";
 import differenceInHours from 'date-fns/difference_in_hours';
@@ -9,13 +7,18 @@ import differenceInSeconds from 'date-fns/difference_in_seconds';
 import addWeeks from "date-fns/add_weeks";
 import addMonths from "date-fns/add_months";
 import addYears from "date-fns/add_years";
+import endOfWeek from "date-fns/end_of_week";
+import endOfMonth from "date-fns/end_of_month";
+import endOfYear from "date-fns/end_of_year";
+import startOfWeek from "date-fns/start_of_week";
+import startOfMonth from "date-fns/start_of_month";
+import startOfYear from "date-fns/start_of_year";
+import {WEEK, MONTH, YEAR} from "../constants/";
 
 export const zeroPad = val => ( (val<10) ? `0${val}` : `${val}` );
 
-/*
-export const formatDate = timestamp => format(timestamp, "YYYYMMDD");
-export const  = timestamp => format(timestamp, "YYYY-MM-DD");
-*/
+export const formatMinutes = mins => `${Math.floor(mins/60)}:${zeroPad(mins%60)}`;
+
 export const formatDate = timestamp => format(timestamp, "YYYY-MM-DD");
 export const formatTime = timestamp => format(timestamp, "HH:mm");
 
@@ -57,3 +60,22 @@ export const weeksAgo = delta => {
 }
 export const monthsAgo = delta => format(addMonths(new Date(), delta),"MMMM YYYY");
 export const yearsAgo = delta => format(addYears(new Date(), delta),"YYYY");
+
+const pt = {
+  [WEEK]:  {i: "week",  af: addWeeks,  sf: startOfWeek,  ef: endOfWeek, o: {weekStartsOn: 1}},
+  [MONTH]: {i: "month", af: addMonths, sf: startOfMonth, ef: endOfMonth, o: {}},
+  [YEAR]:  {i: "year",  af: addYears,  sf: startOfYear,  ef: endOfYear, o: {}}
+};
+
+export const getPeriodBegin = (period, delta) => {
+  const addPeriod = pt[period].af;
+  const startOfPeriod = pt[period].sf;
+  const day = addPeriod(new Date(), delta);
+  return formatDate(startOfPeriod(day, pt[period].o));
+}
+export const getPeriodEnd = (period, delta) => {
+  const addPeriod = pt[period].af;
+  const endOfPeriod = pt[period].ef;
+  const day = addPeriod(new Date(), delta);
+  return formatDate(endOfPeriod(day, pt[period].o));
+}

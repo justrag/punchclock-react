@@ -9,4 +9,3 @@ const shift = createReducer(
   8
 );
 export default shift;
-export const getLength = state => state;

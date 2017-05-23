@@ -17,3 +17,5 @@ export const YEAR = 'YEAR';
 
 export const INC = 'INC';
 export const DEC = 'DEC';
+
+export const STATS_RESET = 'STATS_RESET';

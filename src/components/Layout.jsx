@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { BrowserRouter as Router, Route, Switch, Redirect, NavLink } from "react-router-dom";
-import { getUserLogin, getUserToken } from "../reducers/";
+import { getUserLogin, getUserToken } from "../selectors/";
 import { logOut as logOutAction } from "../actions/";
 import Clock from "./Clock";
 import Stats from "./Stats";

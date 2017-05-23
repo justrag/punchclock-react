@@ -5,7 +5,7 @@ import {
   getTimeselectHours, getTimeselectMinutes,
   getTimeselectPrevHour, getTimeselectPrevMinute,
   getTimeselectNextHour, getTimeselectNextMinute,
-} from '../reducers/';
+} from '../selectors/';
 
 const TimeSelect = ({
   selectedMinute,

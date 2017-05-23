@@ -8,7 +8,8 @@ import reduxImmutableStateInvariant from 'redux-immutable-state-invariant';
 import remoteResourceMiddleware from 'redux-remote-resource';
 import clockTickMiddleware from './middlewares/clockTick';
 import bruteLoggerMiddleware from './middlewares/logger';
-import reducer, { getUserToken } from './reducers/';
+import reducer from './reducers/';
+import { getUserToken } from './selectors/';
 import { clockTick, logOut } from './actions/';
 import Layout from './components/Layout';
 import './styles.css';
@@ -37,7 +38,6 @@ const enhancer = applyMiddleware(
   RRM, thunk, bruteLoggerMiddleware, reduxImmutableStateInvariant(), clockTickMiddleware);
 const composeEnhancer = compose(enhancer, window.__REDUX_DEVTOOLS_EXTENSION__());
 const store = createStore(reducer, composeEnhancer);
-
 /*
 const store = createStore(reducer, composeWithDevTools(
     applyMiddleware(remoteResourceMiddleware(), reduxImmutableStateInvariant(), clockTickMiddleware),

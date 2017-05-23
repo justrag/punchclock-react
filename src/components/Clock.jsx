@@ -7,7 +7,7 @@ import EnterTime from "./EnterTime";
 import ExitTime from "./ExitTime";
 import ShiftLength from "./ShiftLength";
 import { fetchIncident as fetchIncidentAction } from "../actions/";
-import { getTimeselectTimestamp } from '../reducers/';
+import { getTimeselectTimestamp } from '../selectors/';
 import { formatDate } from "../libs/timeFunctions";
 
 class Clock extends Component {

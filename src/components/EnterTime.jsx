@@ -8,7 +8,7 @@ import {
   getTimeselectTimestamp,
   getTimeselectShiftlength,
   getApiStatus
-} from "../reducers/";
+} from "../selectors/";
 
 const Icon = ({enter, status}) => 
   <i className={classNames('fa','fa-lg',(status?"fa-spin fa-refresh":(enter?"fa-pencil":"fa-sign-in")))} />
