@@ -1,4 +1,5 @@
 import format from "date-fns/format";
+import plLocale from "date-fns/locale/pl";
 import getYear from "date-fns/get_year";
 import getMonth from "date-fns/get_month";
 import differenceInHours from 'date-fns/difference_in_hours';
@@ -58,7 +59,7 @@ export const weeksAgo = delta => {
   const weekEnd = endOfWeek(day, {weekStartsOn: 1});
   return `${formatDate(weekBegin)} - ${formatDate(weekEnd)}`;
 }
-export const monthsAgo = delta => format(addMonths(new Date(), delta),"MMMM YYYY");
+export const monthsAgo = delta => format(addMonths(new Date(), delta),"MMMM YYYY", {locale: plLocale});
 export const yearsAgo = delta => format(addYears(new Date(), delta),"YYYY");
 
 const pt = {

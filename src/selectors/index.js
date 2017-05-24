@@ -7,7 +7,6 @@ import * as fromStats from './stats';
 //import * as fromStats from './stats';
 import { formatDate, formatDifferenceInTimestamps, absDifferenceInTimestamps } from '../libs/timeFunctions';
 
-
 export const getUserLogin = state => fromUser.getUserLogin(state.user);
 export const getUserToken = state => fromUser.getUserToken(state.user);
 export const isUserLoading = state => fromUser.isUserLoading(state.user);
@@ -62,7 +61,7 @@ export const getWorktimeForSelectedDate = (state) => {
 };
 
 export const getAbsTimeTillLeave = (state) => {
-  const enter = getEnterOnSelectedDate(state);
+  const enter=new Date(`${getSelectedDate(state)} ${getEnterOnSelectedDate(state)}`);
   const exit = getTimeselectCurrentTimestamp(state);
   const shiftlength = getTimeselectShiftlength(state);
   const dueDate = addHours(enter,shiftlength);

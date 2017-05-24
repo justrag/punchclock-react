@@ -31,7 +31,7 @@ const Stats = ({
         <p><span>{days.week}</span> dni</p>
         <p><span>{shouldWork.week}</span> godzin</p>
         <p><span>{didWork.week}</span>
-          <i className={classNames("fa",(overTime.week?"fa-thumbs-up":"fa-thumbs-down"))}></i>
+          &nbsp;<i className={classNames("fa",(overTime.week?"fa-thumbs-up":"fa-thumbs-down"))}></i>
         </p>
       </div>
       <a onClick={statsWeekInc} className="button">
@@ -47,7 +47,7 @@ const Stats = ({
         <p><span>{days.month}</span> dni</p>
         <p><span>{shouldWork.month}</span> godzin</p>
         <p><span>{didWork.month}</span>
-          <i className={classNames("fa",(overTime.month?"fa-thumbs-up":"fa-thumbs-down"))}></i>
+          &nbsp;<i className={classNames("fa",(overTime.month?"fa-thumbs-up":"fa-thumbs-down"))}></i>
         </p>
       </div>
       <a onClick={statsMonthInc} className="button">
@@ -63,7 +63,7 @@ const Stats = ({
         <p><span>{days.year}</span> dni</p>
         <p><span>{shouldWork.year}</span> godzin</p>
         <p><span>{didWork.year}</span>
-          <i className={classNames("fa",(overTime.year?"fa-thumbs-up":"fa-thumbs-down"))}></i>
+          &nbsp;<i className={classNames("fa",(overTime.year?"fa-thumbs-up":"fa-thumbs-down"))}></i>
         </p>
       </div>
       <a onClick={statsYearInc} className="button">

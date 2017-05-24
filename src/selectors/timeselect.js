@@ -7,11 +7,10 @@ import getMinutesFns from "date-fns/get_minutes";
 import isAfter from 'date-fns/is_after';
 import endOfMonth from "date-fns/end_of_month";
 import endOfYesterday from 'date-fns/end_of_yesterday'
+import addMonths from 'date-fns/add_months'
 import plLocale from "date-fns/locale/pl";
 import format from "date-fns/format";
 import { formatTime, zeroPad } from "../libs/timeFunctions";
-
-const monthsList=['sty','lut','mar','kwi','maj','cze','lip','sie','wrz','paź','lis','gru'];
 
 export const getDisplay = state => format(state.currTimestamp, "ddd D MMM YYYY, HH:mm:ss", {locale: plLocale});
 export const getShiftlength = state => state.shiftlength;
@@ -23,7 +22,8 @@ export const isItToday = state => isToday(state.timestamp);
 export const getTimestring = state => formatTime(state.timestamp);
 
 export const getDate = state => getDateFns(state.timestamp);
-export const getMonths = state => monthsList[getMonthsFns(state.timestamp)];
+//export const getMonths = state => monthsList[getMonthsFns(state.timestamp)];
+export const getMonths = state => format(state.timestamp, "MMM", {locale: plLocale});
 export const getYears = state => getYearsFns(state.timestamp);
 export const getMinutes = state => zeroPad(getMinutesFns(state.timestamp));
 export const getHours = state => zeroPad(getHoursFns(state.timestamp));
@@ -36,9 +36,11 @@ export const getPrevDate = ({timestamp}) =>
 export const getNextDate = ({timestamp}) =>
   ( (getDateFns(timestamp) !== getDateFns(endOfMonth(Date.now()))) && (getDateFns(timestamp)+1) );
 export const getPrevMonth = ({timestamp}) =>
-( (getMonthsFns(timestamp) !== 0) && (monthsList[getMonthsFns(timestamp)-1]) );
+//( (getMonthsFns(timestamp) !== 0) && (monthsList[getMonthsFns(timestamp)-1]) );
+( (getMonthsFns(timestamp) !== 0) && format(addMonths(timestamp,-1), "MMM", {locale: plLocale}) );
 export const getNextMonth = ({timestamp}) =>
-( (getMonthsFns(timestamp) !== 11) && (monthsList[getMonthsFns(timestamp)+1]) );
+//( (getMonthsFns(timestamp) !== 11) && (monthsList[getMonthsFns(timestamp)+1]) );
+( (getMonthsFns(timestamp) !== 11) && format(addMonths(timestamp,1), "MMM", {locale: plLocale}) );
 export const getPrevYear = ({timestamp}) =>
   ((getYearsFns(timestamp) !== 2000) && (getYearsFns(timestamp)-1));
 export const getNextYear = ({timestamp}) => 

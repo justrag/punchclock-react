@@ -11,7 +11,7 @@ import Login from "./Login";
 const Layout = ({ logOut, token, userName }) => (
   <Router>
     {!token
-      ? <Login />
+      ? <div className="wrapper"><Login /></div>
       : <div className="wrapper">
           <nav>
             <NavLink to="/clock">
