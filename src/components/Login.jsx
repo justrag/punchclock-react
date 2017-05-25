@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-//import { Form, FormGroup, FormControl, Button, Alert } from 'react-bootstrap';
-//import ReactSpinner from 'react-spinjs';
+import { Redirect } from "react-router-dom";
 import { logIn as logInAction } from "../actions/";
-import { isUserLoading, getLoginError } from '../selectors/';
+import { isUserLoading, getLoginError, getUserToken } from '../selectors/';
 
 class Login extends Component {
   constructor(props) {
@@ -20,7 +19,8 @@ class Login extends Component {
   }
 
 render() {
-return (
+return (<div>
+  {this.props.token ? <Redirect to="/clock" /> : (
   <div className="at-form" style={{textAlign: 'center'}}>
   <div className="at-title">
     <h3>Zaloguj się</h3>
@@ -51,7 +51,9 @@ return (
         <div>{this.props.loginError.message}</div>
       </div> }
   </div>
- );
+ )
+}
+</div>);
 };
 };
 
@@ -111,5 +113,6 @@ Login.propTypes = {
 const mapStateToProps = state => ({
   isLoading: isUserLoading(state),
   loginError: getLoginError(state),
+  token: getUserToken(state),
 });
 export default connect(mapStateToProps, {loginAction: logInAction})(Login);
