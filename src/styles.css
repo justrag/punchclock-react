@@ -265,6 +265,6 @@ flex: 0 0 auto;
 .at-form {
 	text-transform: uppercase;
 }
-.at-form input[type="text"],  .at-form input[type="password"]{
+.at-form input[type="text"], .at-form input[type="password"], .at-form input[type="email"] {
 	background-color: #B2DFDB;
 }

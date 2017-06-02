@@ -36,6 +36,23 @@ export const logIn = (login, password) => ({
   }
 });
 
+export const registerRequest = createAction("REGISTER_REQUEST");
+export const registerSuccess = createAction("REGISTER_SUCCESS", (login, token) => ({login, token}));
+export const registerFailure = createAction("REGISTER_FAILURE", error => ({error}));
+export const register = (login, password, name, email) => ({
+  [RemoteResource]: {
+    uri: `${API_SERVER}/auth/create`,
+    method: 'post',
+    headers: { 'Accept': 'application/json' },
+    body: {login, password, name, email},
+    lifecycle: {
+      request: registerRequest.getType(),
+      failure: (error, dispatch, data, response) => dispatch(registerFailure(error)),
+      success: ({data}, dispatch) => dispatch(registerSuccess(data.login, data.token)),
+    }
+  }
+});
+
 const apiActionType = (model, mode, stage) => `${model}_${mode}_${stage}`;
 
 const createRequestAction = (model, mode) => date => ({

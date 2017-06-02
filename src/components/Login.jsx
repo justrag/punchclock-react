@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Redirect } from "react-router-dom";
+import { Redirect, NavLink } from "react-router-dom";
 import { logIn as logInAction } from "../actions/";
 import { isUserLoading, getLoginError, getUserToken } from '../selectors/';
 
@@ -46,58 +46,28 @@ return (<div>
       </form>
       }
     {!!this.props.loginError &&
-      <div className="danger">
+      <div className="danger at-error">
         <div><strong>Błąd: {this.props.loginError.name}</strong></div>
         <div>{this.props.loginError.message}</div>
       </div> }
+      <div className="at-pwd-link">
+        <p>
+          <NavLink to="/forgotpassword" className="at-link at-pwd">Zapomniałeś hasła?</NavLink>
+        </p>
+      </div>
+      <div className="at-signup-link">
+        <p>
+          Nie masz konta?&nbsp;
+          <NavLink to="/register" className="at-link at-signup">Zarejestruj się</NavLink>
+        </p>
+      </div>
+
   </div>
  )
 }
 </div>);
 };
 };
-
-
-/*
-<div class="at-form">
-  <div class="at-title">
-    <h3>Zaloguj się</h3>
-  </div>
-  <div class="at-error">
-    <p>Musisz być zalogowany</p>
-  </div>
-  <div class="at-pwd-form">
-    <form role="form" id="at-pwd-form" novalidate="" action="#" method="POST">
-      <div class="at-input">
-        <label for="at-field-email">
-          Email 
-        </label>
-        <input id="at-field-email" name="at-field-email" placeholder="Email" autocapitalize="none" autocorrect="off" type="email">
-      </div>
-      <div class="at-input">
-        <label for="at-field-password">
-          Hasło 
-        </label>
-        <input id="at-field-password" name="at-field-password" placeholder="Hasło" autocapitalize="none" autocorrect="off" type="password">
-      </div>
-      <div class="at-pwd-link">
-        <p>
-          <a href="/forgot-password" id="at-forgotPwd" class="at-link at-pwd">Zapomniałeś hasła?</a>
-        </p>
-      </div>
-      <button type="submit" class="at-btn submit" id="at-btn">
-        Zaloguj się
-      </button>
-    </form>
-  </div>
-  <div class="at-signup-link">
-    <p>
-      Nie masz konta?
-      <a href="/sign-up" id="at-signUp" class="at-link at-signup">Zarejestruj się</a>
-    </p>
-  </div>
-</div>
-*/
 
 Login.propTypes = {
   loginAction: PropTypes.func.isRequired,
