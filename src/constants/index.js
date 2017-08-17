@@ -1,5 +1,5 @@
-
-export const API_SERVER = "http://localhost:8080";
+//export const API_SERVER = "http://localhost:8080";
+export const API_SERVER = 'http://localhost:3000';
 
 export const INCIDENT = 'INCIDENT';
 
