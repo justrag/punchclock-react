@@ -8,6 +8,7 @@ import reduxImmutableStateInvariant from 'redux-immutable-state-invariant';
 import remoteResourceMiddleware from 'redux-remote-resource';
 import clockTickMiddleware from './middlewares/clockTick';
 import bruteLoggerMiddleware from './middlewares/logger';
+import { persistStore, autoRehydrate } from 'redux-persist';
 import reducer from './reducers/';
 import { getUserToken } from './selectors/';
 import { clockTick, logOut } from './actions/';
@@ -27,17 +28,28 @@ const store = createStore(reducer, composeEnhancers(
 
 const RRM = remoteResourceMiddleware({
   injectedHeaders: {
-    'Accept': 'application/json',
-    'Authorization': state => `Bearer ${getUserToken(state)}`,
+    Accept: 'application/json',
+    Authorization: state => `Bearer ${getUserToken(state)}`
   },
   statusActions: {
     401: logOut
   }
 });
 const enhancer = applyMiddleware(
-  RRM, thunk, bruteLoggerMiddleware, reduxImmutableStateInvariant(), clockTickMiddleware);
-const composeEnhancer = compose(enhancer, window.__REDUX_DEVTOOLS_EXTENSION__());
+  RRM,
+  thunk,
+  bruteLoggerMiddleware,
+  reduxImmutableStateInvariant(),
+  clockTickMiddleware
+);
+const composeEnhancer = compose(
+  enhancer,
+  autoRehydrate(),
+  window.__REDUX_DEVTOOLS_EXTENSION__()
+);
 const store = createStore(reducer, composeEnhancer);
+persistStore(store);
+
 /*
 const store = createStore(reducer, composeWithDevTools(
     applyMiddleware(remoteResourceMiddleware(), reduxImmutableStateInvariant(), clockTickMiddleware),
@@ -51,11 +63,10 @@ const store = createStore(reducer, composeWithDevTools(
   ));
 */
 
-const App = () => (
+const App = () =>
   <Provider store={store}>
-      <Layout />
-  </Provider>
-);
+    <Layout />
+  </Provider>;
 
 setInterval(() => store.dispatch(clockTick()), 50000);
 
