@@ -29,7 +29,13 @@ const store = createStore(reducer, composeEnhancers(
 const RRM = remoteResourceMiddleware({
   injectedHeaders: {
     Accept: 'application/json',
-    Authorization: state => `Bearer ${getUserToken(state)}`
+    Authorization: state => {
+      if (getUserToken(state)) {
+        return `Bearer ${getUserToken(state)}`
+      } else {
+        return undefined
+      }
+    }
   },
   statusActions: {
     401: logOut
