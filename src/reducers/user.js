@@ -7,7 +7,8 @@ import {
   logOut,
   registerRequest,
   registerSuccess,
-  registerFailure
+  registerFailure,
+  forgotPasswordSuccess
 } from '../actions/';
 
 const login = createReducer(
@@ -62,11 +63,19 @@ const error = createReducer(
   false
 );
 
+const resetPasswordSent = createReducer(
+  {
+    [forgotPasswordSuccess]: () => true
+  },
+  false
+);
+
 const user = combineReducers({
   login,
   token,
   loading,
-  error
+  error,
+  resetPasswordSent
 });
 
 export default user;

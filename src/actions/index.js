@@ -95,10 +95,7 @@ export const register = (login, password, name, email) => ({
 // FIXME: success, failure output params are just copied fron register
 // change them
 export const forgotPasswordRequest = createAction('FORGOTPASSWORD_REQUEST');
-export const forgotPasswordSuccess = createAction(
-  'FORGOTPASSWORD_SUCCESS',
-  (login, token) => ({ login, token })
-);
+export const forgotPasswordSuccess = createAction('FORGOTPASSWORD_SUCCESS');
 export const forgotPasswordFailure = createAction(
   'FORGOTPASSWORD_FAILURE',
   error => ({ error })
@@ -113,8 +110,7 @@ export const forgotPassword = email => ({
       request: forgotPasswordRequest.getType(),
       failure: (error, dispatch, data, response) =>
         dispatch(forgotPasswordFailure(error)),
-      success: ({ data }, dispatch) =>
-        dispatch(forgotPasswordSuccess(data.login, data.token))
+      success: forgotPasswordSuccess.getType()
     }
   }
 });

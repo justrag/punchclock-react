@@ -3,7 +3,12 @@ import { compose, withState, withHandlers } from 'recompose';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { forgotPassword } from '../actions/';
-import { isUserLoading, getLoginError, getUserToken } from '../selectors/';
+import {
+  isUserLoading,
+  getLoginError,
+  getUserToken,
+  getResetPasswordSent
+} from '../selectors/';
 
 const centerStyle = { textAlign: 'center' };
 
@@ -14,7 +19,8 @@ const ForgotPassword = ({
   forgotPasswordAction,
   token,
   isLoading,
-  loginError
+  loginError,
+  resetPasswordSent
 }) =>
   <div>
     {token
@@ -44,6 +50,12 @@ const ForgotPassword = ({
                 <strong>Błąd komunikacji.</strong>
               </div>
             </div>}
+          {!!resetPasswordSent &&
+            <div className="at-title">
+              <div>
+                <strong>Kod do zmiany hasła posłano na podany email.</strong>
+              </div>
+            </div>}
         </div>}
   </div>;
 
@@ -54,7 +66,8 @@ export default compose(
     state => ({
       isLoading: isUserLoading(state),
       loginError: getLoginError(state),
-      token: getUserToken(state)
+      token: getUserToken(state),
+      resetPasswordSent: getResetPasswordSent(state)
     }),
     {
       forgotPasswordAction: forgotPassword
