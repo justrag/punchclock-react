@@ -1,6 +1,4 @@
-//export const API_SERVER = "http://localhost:8080";
-//export const API_SERVER = 'http://localhost:3000';
-export const API_SERVER = 'https://odbijsie.pl/api';
+export const API_SERVER = process.env.REACT_APP_API_SERVER;
 
 export const INCIDENT = 'INCIDENT';
 
