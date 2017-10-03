@@ -18,6 +18,8 @@ export const getLoginError = state => fromUser.getLoginError(state.user);
 
 export const getResetPasswordSent = state =>
   fromUser.getResetPasswordSent(state.user);
+export const getNewPasswordSent = state =>
+  fromUser.getNewPasswordSent(state.user);
 
 export const isTimeselectToday = state =>
   fromTimeselect.isItToday(state.timeselect);

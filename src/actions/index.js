@@ -115,6 +115,27 @@ export const forgotPassword = email => ({
   }
 });
 
+export const resetPasswordRequest = createAction('RESETPASSWORD_REQUEST');
+export const resetPasswordSuccess = createAction('RESETPASSWORD_SUCCESS');
+export const resetPasswordFailure = createAction(
+  'RESETPASSWORD_FAILURE',
+  error => ({ error })
+);
+export const resetPassword = (resetToken, password) => ({
+  [RemoteResource]: {
+    uri: `${API_SERVER}/auth/reset-password/${resetToken}`,
+    method: 'post',
+    headers: { Accept: 'application/json' },
+    body: { password },
+    lifecycle: {
+      request: resetPasswordRequest.getType(),
+      failure: (error, dispatch, data, response) =>
+        dispatch(resetPasswordFailure(error)),
+      success: resetPasswordSuccess.getType()
+    }
+  }
+});
+
 const apiActionType = (model, mode, stage) => `${model}_${mode}_${stage}`;
 
 const createRequestAction = (model, mode) => date => ({
