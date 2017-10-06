@@ -79,9 +79,11 @@ export default compose(
       const value = event.target.value;
       return setFields(f => ({ ...f, [field]: value }));
     },
-    submit: ({ resetPasswordAction, fields, setFields, params }) => ev => {
+    submit: ({ resetPasswordAction, fields, setFields, match }) => ev => {
+      //  props.match.params comes from ReactRouter:
+      // <Route path="/resetpassword/:resetToken" component={ResetPassword} />
       ev.preventDefault();
-      resetPasswordAction(params.resetToken, fields.password); //FIXME: GET IT FROM THE ROUTE
+      resetPasswordAction(match.params.resetToken, fields.password);
       setFields(emptyFields);
     }
   })
