@@ -8,6 +8,7 @@ import reduxImmutableStateInvariant from 'redux-immutable-state-invariant';
 import remoteResourceMiddleware from 'redux-remote-resource';
 import clockTickMiddleware from './middlewares/clockTick';
 import bruteLoggerMiddleware from './middlewares/logger';
+import flashMiddleware from './middlewares/flash';
 import { persistStore, autoRehydrate } from 'redux-persist';
 import reducer from './reducers/';
 import { getUserToken } from './selectors/';
@@ -31,9 +32,9 @@ const RRM = remoteResourceMiddleware({
     Accept: 'application/json',
     Authorization: state => {
       if (getUserToken(state)) {
-        return `Bearer ${getUserToken(state)}`
+        return `Bearer ${getUserToken(state)}`;
       } else {
-        return undefined
+        return undefined;
       }
     }
   },
@@ -46,7 +47,8 @@ const enhancer = applyMiddleware(
   thunk,
   bruteLoggerMiddleware,
   reduxImmutableStateInvariant(),
-  clockTickMiddleware
+  clockTickMiddleware,
+  flashMiddleware
 );
 const composeEnhancer = compose(
   enhancer,

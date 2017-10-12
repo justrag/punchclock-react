@@ -18,3 +18,6 @@ export const INC = 'INC';
 export const DEC = 'DEC';
 
 export const STATS_RESET = 'STATS_RESET';
+
+export const FLASH_ADD = 'FLASH_ADD';
+export const FLASH_REMOVE = 'FLASH_REMOVE';

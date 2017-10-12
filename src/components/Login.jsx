@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Redirect, NavLink } from 'react-router-dom';
 import { logIn as logInAction } from '../actions/';
 import { isUserLoading, getLoginError, getUserToken } from '../selectors/';
+import Flash from './Flash';
 
 class Login extends Component {
   constructor(props) {
@@ -58,6 +59,7 @@ class Login extends Component {
                     <strong>Błąd logowania.</strong>
                   </div>
                 </div>}
+              <Flash />
               <div className="at-pwd-link">
                 <p>
                   <NavLink to="/forgotpassword" className="at-link at-pwd">

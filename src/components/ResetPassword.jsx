@@ -9,6 +9,7 @@ import {
   getUserToken,
   getNewPasswordSent
 } from '../selectors/';
+import Flash from './Flash';
 
 const centerStyle = { textAlign: 'center' };
 
@@ -44,6 +45,7 @@ const ResetPassword = ({
               </div>
               <button type="submit">Zmień hasło</button>
             </form>}
+          <Flash />
           {!!loginError &&
             <div className="danger at-error">
               <div>

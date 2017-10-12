@@ -10,7 +10,9 @@ import {
   FAILURE,
   SUCCESS,
   INC,
-  STATS_RESET
+  STATS_RESET,
+  FLASH_ADD,
+  FLASH_REMOVE
 } from '../constants/';
 import {
   formatDate,
@@ -18,6 +20,17 @@ import {
   getPeriodBegin,
   getPeriodEnd
 } from '../libs/timeFunctions';
+
+export const addFlashMessage = createAction(
+  FLASH_ADD,
+  (id, type, text, duration) => ({
+    id,
+    type,
+    text,
+    duration
+  })
+);
+export const removeFlashMessage = createAction(FLASH_REMOVE, id => ({ id }));
 
 export const timeselectReset = createAction('TIMESELECT_RESET');
 export const timeselectShiftlengthIncrease = createAction(
@@ -48,9 +61,15 @@ export const logInSuccess = createAction('LOG_IN_SUCCESS', (login, token) => ({
   login,
   token
 }));
-export const logInFailure = createAction('LOG_IN_FAILURE', error => ({
-  error
-}));
+export const logInFailure = createAction(
+  'LOG_IN_FAILURE',
+  error => ({
+    error
+  }),
+  () => ({
+    flash: { type: 'ERROR', text: 'Błąd logowania', duration: 6000 }
+  })
+);
 
 export const logIn = (login, password) => ({
   [RemoteResource]: {
@@ -73,9 +92,15 @@ export const registerSuccess = createAction(
   'REGISTER_SUCCESS',
   (login, token) => ({ login, token })
 );
-export const registerFailure = createAction('REGISTER_FAILURE', error => ({
-  error
-}));
+export const registerFailure = createAction(
+  'REGISTER_FAILURE',
+  error => ({
+    error
+  }),
+  () => ({
+    flash: { type: 'ERROR', text: 'Błąd rejestracji', duration: 6000 }
+  })
+);
 export const register = (login, password, name, email) => ({
   [RemoteResource]: {
     uri: `${API_SERVER}/auth/create`,
@@ -95,10 +120,27 @@ export const register = (login, password, name, email) => ({
 // FIXME: success, failure output params are just copied fron register
 // change them
 export const forgotPasswordRequest = createAction('FORGOTPASSWORD_REQUEST');
-export const forgotPasswordSuccess = createAction('FORGOTPASSWORD_SUCCESS');
+export const forgotPasswordSuccess = createAction(
+  'FORGOTPASSWORD_SUCCESS',
+  null,
+  () => ({
+    flash: {
+      type: 'INFO',
+      text: 'Kod do zmiany hasła posłano na podany email.',
+      duration: 6000
+    }
+  })
+);
 export const forgotPasswordFailure = createAction(
   'FORGOTPASSWORD_FAILURE',
-  error => ({ error })
+  error => ({ error }),
+  () => ({
+    flash: {
+      type: 'ERROR',
+      text: 'Błąd komunikacji z serwerem',
+      duration: 6000
+    }
+  })
 );
 export const forgotPassword = email => ({
   [RemoteResource]: {
@@ -116,10 +158,19 @@ export const forgotPassword = email => ({
 });
 
 export const resetPasswordRequest = createAction('RESETPASSWORD_REQUEST');
-export const resetPasswordSuccess = createAction('RESETPASSWORD_SUCCESS');
+export const resetPasswordSuccess = createAction(
+  'RESETPASSWORD_SUCCESS',
+  null,
+  () => ({
+    flash: { type: 'INFO', text: 'Hasło zmienione', duration: 6000 }
+  })
+);
 export const resetPasswordFailure = createAction(
   'RESETPASSWORD_FAILURE',
-  error => ({ error })
+  error => ({ error }),
+  () => ({
+    flash: { type: 'ERROR', text: 'Błąd logowania', duration: 6000 }
+  })
 );
 export const resetPassword = (resetToken, password) => ({
   [RemoteResource]: {

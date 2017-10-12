@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { register } from '../actions/';
 import { isUserLoading, getLoginError, getUserToken } from '../selectors/';
+import Flash from './Flash';
 
 const centerStyle = { textAlign: 'center' };
 
@@ -68,13 +69,8 @@ const Register = ({
               </div>
               <button type="submit">Zarejestruj się</button>
             </form>}
-          {!!loginError &&
-            <div className="danger at-error">
-              <div>
-                <strong>Błąd rejestracji/logowania.</strong>
-              </div>
-            </div>}
         </div>}
+    <Flash />
   </div>;
 
 const emptyFields = { name: '', email: '', login: '', password: '' };

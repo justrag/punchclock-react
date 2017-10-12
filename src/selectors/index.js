@@ -3,6 +3,7 @@ import * as fromUser from './user';
 import * as fromTimeselect from './timeselect';
 import * as fromIncidents from './incidents';
 import * as fromStats from './stats';
+import * as fromFlash from './flash';
 
 //import * as fromStats from './stats';
 import {
@@ -120,3 +121,5 @@ export const getStatsShouldWork = state => fromStats.getShouldWork(state.stats);
 export const getStatsDidWork = state => fromStats.getDidWork(state.stats);
 export const getStatsText = state => fromStats.getText(state.stats);
 export const getStatsOverTime = state => fromStats.getOverTime(state.stats);
+
+export const getFlashMessages = state => fromFlash.getMessages(state.flash);
