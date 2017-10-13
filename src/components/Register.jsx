@@ -3,8 +3,7 @@ import { compose, withState, withHandlers } from 'recompose';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { register } from '../actions/';
-import { isUserLoading, getLoginError, getUserToken } from '../selectors/';
-import Flash from './Flash';
+import { isUserLoading, getUserToken } from '../selectors/';
 
 const centerStyle = { textAlign: 'center' };
 
@@ -14,8 +13,7 @@ const Register = ({
   submit,
   registerAction,
   token,
-  isLoading,
-  loginError
+  isLoading
 }) =>
   <div>
     {token
@@ -70,7 +68,6 @@ const Register = ({
               <button type="submit">Zarejestruj się</button>
             </form>}
         </div>}
-    <Flash />
   </div>;
 
 const emptyFields = { name: '', email: '', login: '', password: '' };
@@ -79,7 +76,6 @@ export default compose(
   connect(
     state => ({
       isLoading: isUserLoading(state),
-      loginError: getLoginError(state),
       token: getUserToken(state)
     }),
     {

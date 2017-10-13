@@ -67,7 +67,7 @@ export const logInFailure = createAction(
     error
   }),
   () => ({
-    flash: { type: 'ERROR', text: 'Błąd logowania', duration: 6000 }
+    flash: { type: 'error', text: 'Błąd logowania', duration: 6000 }
   })
 );
 
@@ -90,7 +90,14 @@ export const logIn = (login, password) => ({
 export const registerRequest = createAction('REGISTER_REQUEST');
 export const registerSuccess = createAction(
   'REGISTER_SUCCESS',
-  (login, token) => ({ login, token })
+  (login, token) => ({ login, token }),
+  () => ({
+    flash: {
+      type: 'info',
+      text: 'Rejestracja udana.',
+      duration: 6000
+    }
+  })
 );
 export const registerFailure = createAction(
   'REGISTER_FAILURE',
@@ -98,7 +105,7 @@ export const registerFailure = createAction(
     error
   }),
   () => ({
-    flash: { type: 'ERROR', text: 'Błąd rejestracji', duration: 6000 }
+    flash: { type: 'error', text: 'Błąd rejestracji', duration: 6000 }
   })
 );
 export const register = (login, password, name, email) => ({
@@ -117,15 +124,13 @@ export const register = (login, password, name, email) => ({
   }
 });
 
-// FIXME: success, failure output params are just copied fron register
-// change them
 export const forgotPasswordRequest = createAction('FORGOTPASSWORD_REQUEST');
 export const forgotPasswordSuccess = createAction(
   'FORGOTPASSWORD_SUCCESS',
   null,
   () => ({
     flash: {
-      type: 'INFO',
+      type: 'info',
       text: 'Kod do zmiany hasła posłano na podany email.',
       duration: 6000
     }
@@ -136,8 +141,8 @@ export const forgotPasswordFailure = createAction(
   error => ({ error }),
   () => ({
     flash: {
-      type: 'ERROR',
-      text: 'Błąd komunikacji z serwerem',
+      type: 'error',
+      text: 'Błędne żądanie zmiany hasła',
       duration: 6000
     }
   })
@@ -152,7 +157,8 @@ export const forgotPassword = email => ({
       request: forgotPasswordRequest.getType(),
       failure: (error, dispatch, data, response) =>
         dispatch(forgotPasswordFailure(error)),
-      success: forgotPasswordSuccess.getType()
+      success: (payload, dispatch, response) =>
+        dispatch(forgotPasswordSuccess())
     }
   }
 });
@@ -162,14 +168,18 @@ export const resetPasswordSuccess = createAction(
   'RESETPASSWORD_SUCCESS',
   null,
   () => ({
-    flash: { type: 'INFO', text: 'Hasło zmienione', duration: 6000 }
+    flash: { type: 'info', text: 'Hasło zmienione', duration: 6000 }
   })
 );
 export const resetPasswordFailure = createAction(
   'RESETPASSWORD_FAILURE',
   error => ({ error }),
   () => ({
-    flash: { type: 'ERROR', text: 'Błąd logowania', duration: 6000 }
+    flash: {
+      type: 'error',
+      text: 'Błędne żądanie specyfikacji nowego hasła',
+      duration: 6000
+    }
   })
 );
 export const resetPassword = (resetToken, password) => ({
@@ -182,7 +192,7 @@ export const resetPassword = (resetToken, password) => ({
       request: resetPasswordRequest.getType(),
       failure: (error, dispatch, data, response) =>
         dispatch(resetPasswordFailure(error)),
-      success: resetPasswordSuccess.getType()
+      success: (payload, dispatch, response) => dispatch(resetPasswordSuccess())
     }
   }
 });

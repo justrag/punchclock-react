@@ -1,15 +1,24 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { getFlashMessages } from '../selectors/';
 
 const Message = ({ id, type, text }) =>
-  <div className={type}>
+  <p key={id} className={type}>
     {text}
-  </div>;
+  </p>;
 
+// synchronize transitionEnterTimeout and transitionLeaveTimeout
+// here and in CSS
 const Flash = ({ messages }) =>
   <div className="flash">
-    {messages.map(m => <Message {...m} />)}
+    <ReactCSSTransitionGroup
+      transitionName="flash"
+      transitionEnterTimeout={1000}
+      transitionLeaveTimeout={2000}
+    >
+      {messages.map(m => <Message {...m} />)}
+    </ReactCSSTransitionGroup>
   </div>;
 
 const mapStateToProps = state => ({

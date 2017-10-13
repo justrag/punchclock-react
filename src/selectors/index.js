@@ -15,12 +15,6 @@ import {
 export const getUserLogin = state => fromUser.getUserLogin(state.user);
 export const getUserToken = state => fromUser.getUserToken(state.user);
 export const isUserLoading = state => fromUser.isUserLoading(state.user);
-export const getLoginError = state => fromUser.getLoginError(state.user);
-
-export const getResetPasswordSent = state =>
-  fromUser.getResetPasswordSent(state.user);
-export const getNewPasswordSent = state =>
-  fromUser.getNewPasswordSent(state.user);
 
 export const isTimeselectToday = state =>
   fromTimeselect.isItToday(state.timeselect);

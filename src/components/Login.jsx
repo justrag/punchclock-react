@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect, NavLink } from 'react-router-dom';
 import { logIn as logInAction } from '../actions/';
-import { isUserLoading, getLoginError, getUserToken } from '../selectors/';
-import Flash from './Flash';
+import { isUserLoading, getUserToken } from '../selectors/';
 
 class Login extends Component {
   constructor(props) {
@@ -53,13 +52,6 @@ class Login extends Component {
                   </div>
                   <button type="submit">Zaloguj się</button>
                 </form>}
-              {!!this.props.loginError &&
-                <div className="danger at-error">
-                  <div>
-                    <strong>Błąd logowania.</strong>
-                  </div>
-                </div>}
-              <Flash />
               <div className="at-pwd-link">
                 <p>
                   <NavLink to="/forgotpassword" className="at-link at-pwd">
@@ -83,18 +75,10 @@ class Login extends Component {
 
 Login.propTypes = {
   loginAction: PropTypes.func.isRequired,
-  isLoading: PropTypes.bool,
-  loginError: PropTypes.bool
-  /*
-  loginError: PropTypes.shape({
-    message: PropTypes.string,
-    name: PropTypes.string,
-  }),
-  */
+  isLoading: PropTypes.bool
 };
 const mapStateToProps = state => ({
   isLoading: isUserLoading(state),
-  loginError: getLoginError(state),
   token: getUserToken(state)
 });
 export default connect(mapStateToProps, { loginAction: logInAction })(Login);

@@ -16,6 +16,7 @@ import Login from './Login';
 import Register from './Register';
 import ForgotPassword from './ForgotPassword';
 import ResetPassword from './ResetPassword';
+import Flash from './Flash';
 
 const UserRoute = ({ token, component: Component, ...rest }) =>
   <Route
@@ -66,9 +67,7 @@ const Layout = ({ logOut, token, userName }) =>
         </Switch>
       </section>
       <footer>
-        <p>Bardzo</p>
-        <p>Ciekawa</p>
-        <p>Reklama</p>
+        <Flash />
       </footer>
     </div>
   </Router>;

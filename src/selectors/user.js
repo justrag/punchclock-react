@@ -1,6 +1,3 @@
-export const getUserLogin = state => state.login;
-export const getUserToken = state => state.token;
+export const getUserLogin = state => state.account.login;
+export const getUserToken = state => state.account.token;
 export const isUserLoading = state => state.loading;
-export const getLoginError = state => state.error;
-export const getResetPasswordSent = state => state.resetPasswordSent;
-export const getNewPasswordSent = state => state.newPasswordSent;

@@ -1,15 +1,9 @@
 import React from 'react';
 import { compose, withState, withHandlers } from 'recompose';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { Redirect, NavLink } from 'react-router-dom';
 import { forgotPassword } from '../actions/';
-import {
-  isUserLoading,
-  getLoginError,
-  getUserToken,
-  getResetPasswordSent
-} from '../selectors/';
-import Flash from './Flash';
+import { isUserLoading, getUserToken } from '../selectors/';
 
 const centerStyle = { textAlign: 'center' };
 
@@ -19,9 +13,7 @@ const ForgotPassword = ({
   submit,
   forgotPasswordAction,
   token,
-  isLoading,
-  loginError,
-  resetPasswordSent
+  isLoading
 }) =>
   <div>
     {token
@@ -44,20 +36,14 @@ const ForgotPassword = ({
                 />
               </div>
               <button type="submit">Wyślij email z kodem</button>
+              <div className="at-pwd-link">
+                <p>
+                  <NavLink to="/login" className="at-link at-pwd">
+                    Zaloguj się
+                  </NavLink>
+                </p>
+              </div>
             </form>}
-          <Flash />
-          {!!loginError &&
-            <div className="danger at-error">
-              <div>
-                <strong>Błąd komunikacji.</strong>
-              </div>
-            </div>}
-          {!!resetPasswordSent &&
-            <div className="at-title">
-              <div>
-                <strong>Kod do zmiany hasła posłano na podany email.</strong>
-              </div>
-            </div>}
         </div>}
   </div>;
 
@@ -67,9 +53,7 @@ export default compose(
   connect(
     state => ({
       isLoading: isUserLoading(state),
-      loginError: getLoginError(state),
-      token: getUserToken(state),
-      resetPasswordSent: getResetPasswordSent(state)
+      token: getUserToken(state)
     }),
     {
       forgotPasswordAction: forgotPassword

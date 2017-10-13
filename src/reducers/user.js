@@ -7,32 +7,23 @@ import {
   logOut,
   registerRequest,
   registerSuccess,
-  registerFailure,
-  forgotPasswordSuccess,
-  resetPasswordSuccess
+  registerFailure
 } from '../actions/';
 
-const login = createReducer(
+const account = createReducer(
   {
     [logInRequest]: () => false,
     [registerRequest]: () => false,
     [logInFailure]: () => false,
     [registerFailure]: () => false,
-    [logInSuccess]: (state, { login, token }) => login,
-    [registerSuccess]: (state, { login, token }) => login,
-    [logOut]: () => false
-  },
-  false
-);
-
-const token = createReducer(
-  {
-    [logInRequest]: () => false,
-    [logInFailure]: () => false,
-    [logInSuccess]: (state, { login, token }) => token,
-    [registerRequest]: () => false,
-    [registerFailure]: () => false,
-    [registerSuccess]: (state, { login, token }) => token,
+    [logInSuccess]: (state, { login, token }) => ({
+      login,
+      token
+    }),
+    [registerSuccess]: (state, { login, token }) => ({
+      login,
+      token
+    }),
     [logOut]: () => false
   },
   false
@@ -51,39 +42,9 @@ const loading = createReducer(
   false
 );
 
-const error = createReducer(
-  {
-    [logInRequest]: () => false,
-    [logInFailure]: () => true,
-    [logInSuccess]: () => false,
-    [registerRequest]: () => false,
-    [registerFailure]: () => true,
-    [registerSuccess]: () => false,
-    [logOut]: () => false
-  },
-  false
-);
-
-const resetPasswordSent = createReducer(
-  {
-    [forgotPasswordSuccess]: () => true
-  },
-  false
-);
-const newPasswordSent = createReducer(
-  {
-    [resetPasswordSuccess]: () => true
-  },
-  false
-);
-
 const user = combineReducers({
-  login,
-  token,
-  loading,
-  error,
-  resetPasswordSent,
-  newPasswordSent
+  account,
+  loading
 });
 
 export default user;
