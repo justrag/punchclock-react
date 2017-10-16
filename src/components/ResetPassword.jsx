@@ -11,6 +11,7 @@ const ResetPassword = ({
   fields,
   changeFieldFromInput,
   submit,
+  validate,
   resetPasswordAction,
   token,
   isLoading
@@ -25,17 +26,30 @@ const ResetPassword = ({
           {!!isLoading && <div>Chwileczkę...</div>}
           {!isLoading &&
             <form onSubmit={submit}>
+              {!validate() && <p>Hasła nie pasują!</p>}
               <div className="at-input">
                 <label htmlFor="password">Nowe hasło</label>
                 <input
                   type="password"
                   name="password"
-                  minLength={5}
+                  minLength={8}
                   value={fields.password}
                   onChange={changeFieldFromInput('password')}
                 />
               </div>
-              <button type="submit">Zmień hasło</button>
+              <div className="at-input">
+                <label htmlFor="password2">Powtórz hasło</label>
+                <input
+                  type="password"
+                  name="password2"
+                  minLength={8}
+                  value={fields.password2}
+                  onChange={changeFieldFromInput('password2')}
+                />
+              </div>
+              <button disabled={!validate()} type="submit">
+                Zmień hasło
+              </button>
               <div className="at-pwd-link">
                 <p>
                   <NavLink to="/login" className="at-link at-pwd">
@@ -47,7 +61,7 @@ const ResetPassword = ({
         </div>}
   </div>;
 
-const emptyFields = { password: '' };
+const emptyFields = { password: '', password2: '' };
 
 export default compose(
   connect(
@@ -65,6 +79,7 @@ export default compose(
       const value = event.target.value;
       return setFields(f => ({ ...f, [field]: value }));
     },
+    validate: ({ fields }) => () => fields.password === fields.password2,
     submit: ({ resetPasswordAction, fields, setFields, match }) => ev => {
       //  props.match.params comes from ReactRouter:
       // <Route path="/resetpassword/:resetToken" component={ResetPassword} />

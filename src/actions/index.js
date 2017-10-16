@@ -57,8 +57,8 @@ export const clockTick = createAction('CLOCK_TICK', null, () => ({
 export const logOut = createAction('LOG_OUT');
 
 export const logInRequest = createAction('LOG_IN_REQUEST');
-export const logInSuccess = createAction('LOG_IN_SUCCESS', (login, token) => ({
-  login,
+export const logInSuccess = createAction('LOG_IN_SUCCESS', (email, token) => ({
+  email,
   token
 }));
 export const logInFailure = createAction(
@@ -71,18 +71,18 @@ export const logInFailure = createAction(
   })
 );
 
-export const logIn = (login, password) => ({
+export const logIn = (email, password) => ({
   [RemoteResource]: {
     uri: `${API_SERVER}/auth/login`,
     method: 'post',
     headers: { Accept: 'application/json' },
-    body: { login, password },
+    body: { email, password },
     lifecycle: {
       request: logInRequest.getType(),
       failure: (error, dispatch, data, response) =>
         dispatch(logInFailure(error)),
       success: ({ data }, dispatch) =>
-        dispatch(logInSuccess(data.login, data.token))
+        dispatch(logInSuccess(data.email, data.token))
     }
   }
 });
@@ -90,7 +90,7 @@ export const logIn = (login, password) => ({
 export const registerRequest = createAction('REGISTER_REQUEST');
 export const registerSuccess = createAction(
   'REGISTER_SUCCESS',
-  (login, token) => ({ login, token }),
+  (email, token) => ({ email, token }),
   () => ({
     flash: {
       type: 'info',

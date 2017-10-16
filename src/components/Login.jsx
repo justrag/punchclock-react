@@ -8,14 +8,14 @@ import { isUserLoading, getUserToken } from '../selectors/';
 class Login extends Component {
   constructor(props) {
     super(props);
-    this.state = { login: '', password: '' };
+    this.state = { email: '', password: '' };
   }
-  loginChange = ev => this.setState({ login: ev.target.value });
+  emailChange = ev => this.setState({ email: ev.target.value });
   passwordChange = ev => this.setState({ password: ev.target.value });
   submit = ev => {
     ev.preventDefault();
-    this.props.loginAction(this.state.login, this.state.password);
-    this.setState({ login: '', password: '' });
+    this.props.loginAction(this.state.email, this.state.password);
+    this.setState({ email: '', password: '' });
   };
 
   render() {
@@ -31,13 +31,13 @@ class Login extends Component {
               {!this.props.isLoading &&
                 <form onSubmit={this.submit}>
                   <div className="at-input">
-                    <label htmlFor="login">Login</label>
+                    <label htmlFor="email">Email</label>
                     <input
                       type="text"
-                      name="login"
+                      name="email"
                       minLength={5}
-                      value={this.state.login}
-                      onChange={this.loginChange}
+                      value={this.state.email}
+                      onChange={this.emailChange}
                     />
                   </div>
                   <div className="at-input">

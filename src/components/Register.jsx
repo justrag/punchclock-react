@@ -11,6 +11,7 @@ const Register = ({
   fields,
   changeFieldFromInput,
   submit,
+  validate,
   registerAction,
   token,
   isLoading
@@ -25,34 +26,15 @@ const Register = ({
           {!!isLoading && <div>Trwa rejestracja...</div>}
           {!isLoading &&
             <form onSubmit={submit}>
-              <div className="at-input">
-                <label htmlFor="name">Imię</label>
-                <input
-                  type="text"
-                  name="name"
-                  minLength={5}
-                  value={fields.name}
-                  onChange={changeFieldFromInput('name')}
-                />
-              </div>
+              {!validate() && <p>Hasła nie pasują!</p>}
               <div className="at-input">
                 <label htmlFor="email">Email</label>
                 <input
                   type="email"
                   name="email"
-                  minLength={5}
+                  minLength={1}
                   value={fields.email}
                   onChange={changeFieldFromInput('email')}
-                />
-              </div>
-              <div className="at-input">
-                <label htmlFor="login">Login</label>
-                <input
-                  type="text"
-                  name="login"
-                  minLength={5}
-                  value={fields.login}
-                  onChange={changeFieldFromInput('login')}
                 />
               </div>
               <div className="at-input">
@@ -65,12 +47,24 @@ const Register = ({
                   onChange={changeFieldFromInput('password')}
                 />
               </div>
-              <button type="submit">Zarejestruj się</button>
+              <div className="at-input">
+                <label htmlFor="password">Powtórz hasło</label>
+                <input
+                  type="password"
+                  name="password2"
+                  minLength={8}
+                  value={fields.password2}
+                  onChange={changeFieldFromInput('password2')}
+                />
+              </div>
+              <button disabled={!validate()} type="submit">
+                Zarejestruj się
+              </button>
             </form>}
         </div>}
   </div>;
 
-const emptyFields = { name: '', email: '', login: '', password: '' };
+const emptyFields = { email: '', password: '', password2: '' };
 
 export default compose(
   connect(
@@ -88,6 +82,7 @@ export default compose(
       const value = event.target.value;
       return setFields(f => ({ ...f, [field]: value }));
     },
+    validate: ({ fields }) => () => fields.password === fields.password2,
     submit: ({ registerAction, fields, setFields }) => ev => {
       ev.preventDefault();
       registerAction(fields.login, fields.password, fields.name, fields.email);

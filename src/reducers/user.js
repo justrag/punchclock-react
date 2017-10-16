@@ -16,12 +16,12 @@ const account = createReducer(
     [registerRequest]: () => false,
     [logInFailure]: () => false,
     [registerFailure]: () => false,
-    [logInSuccess]: (state, { login, token }) => ({
-      login,
+    [logInSuccess]: (state, { email, token }) => ({
+      email,
       token
     }),
-    [registerSuccess]: (state, { login, token }) => ({
-      login,
+    [registerSuccess]: (state, { email, token }) => ({
+      email,
       token
     }),
     [logOut]: () => false
