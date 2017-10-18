@@ -119,7 +119,7 @@ export const register = (login, password, name, email) => ({
       failure: (error, dispatch, data, response) =>
         dispatch(registerFailure(error)),
       success: ({ data }, dispatch) =>
-        dispatch(registerSuccess(data.login, data.token))
+        dispatch(registerSuccess(data.email, data.token))
     }
   }
 });
