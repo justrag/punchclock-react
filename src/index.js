@@ -50,11 +50,10 @@ const enhancer = applyMiddleware(
   clockTickMiddleware,
   flashMiddleware
 );
-const composeEnhancer = compose(
-  enhancer,
-  autoRehydrate(),
-  window.__REDUX_DEVTOOLS_EXTENSION__()
-);
+
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+const composeEnhancer = composeEnhancers(enhancer, autoRehydrate());
 const store = createStore(reducer, composeEnhancer);
 persistStore(store);
 
